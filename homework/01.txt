@@ -1,0 +1,14 @@
+
+根据如下表格，在可以操作的地方打上对勾，不可以操作的地方打上叉号。
+
+目录权限    0   1   2   3   4   5   6   7
+ls
+/bin/ls
+cp file
+rm file
+nano file
+
+文件权限     0   1   2   3   4   5   6   7
+cp file
+nano file
+run 
