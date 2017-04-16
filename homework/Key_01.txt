@@ -6,7 +6,7 @@
 ls          X   X   X   X   OX  O   OX  O
 /bin/ls     X   X   X   X   OX  O   OX  O
 cp file     X   O   X   O   X   O   X   O
-rm file     X   X   X   O   X   N   X   O
+rm file     X   X   X   O   X   X   X   O
 nano file   X   O   X   O   X   O   X   O
 cd          X   O   X   O   X   O   X   O
 
