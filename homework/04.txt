@@ -1,0 +1,17 @@
+# C语言编程作业
+
+
+编写calc.c，add.c和add.h三个源文件，要求：
+
+* 源文件
+	* add.c 提供add(int,int)函数
+	* add.h 提供add函数声明
+	* add(int,int)打包成库libadd.a
+	* calc.c 利用libadd.a中的add函数，完成计算add(100,100)并输出结果
+
+* 编写Makefile进行项目管理（包括生成库、生成可执行文件、clean等目标）
+
+* A4纸上打印
+	* 源代码及Makefile的内容
+	* 程序运行结果
+
