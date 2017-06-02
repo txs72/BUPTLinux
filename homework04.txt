@@ -1,0 +1,53 @@
+//add.c
+
+int add(int x, int y) {
+	return x+y;
+}
+
+//add.h
+#ifndef _ADD_H_
+#define _ADD_H_
+
+int add(int x, int y);
+
+#endif
+
+//calc.c
+
+#include <stdio.h>
+#include "add.h"
+
+int main() {
+	int x = 100;
+	int y = 100;
+	printf("%d + %d = %d\n", x, y, add(x, y));
+	return 0;	
+}
+
+#Makefile
+calc: calc.o libadd.a
+	gcc calc.o -o calc -I. -L. -ladd
+
+calc.o: calc.c
+	gcc -c calc.c -o calc.o
+
+libadd.a: add.o
+	ar -crv libadd.a add.o
+
+add.o: add.c
+	gcc -c add.c -o add.o
+
+clean:
+	rm -f calc calc.o libadd.a add.o adder.tar.gz
+
+install: calc
+	sudo cp calc /usr/local/bin/calc
+
+uninstall:
+	sudo rm -f hello /usr/local/bin/calc
+
+dist: clean
+	mkdir adder
+	cp add.h add.c calc.c Makefile adder/
+	tar czvf adder.tar.gz adder
+	rm -fr adder
