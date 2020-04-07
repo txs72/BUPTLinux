@@ -1,0 +1,9 @@
+northwest    NW    Charles Main        3.0    .98        3    34
+western      WE    Sharon Gray         5.3    .97        5    23
+southwest    SW    Levis Dalsass       2.7    .8         2    18
+southern     SO    Suan Chin           5.1    .95        4    15
+southeast    SE    Patricia Hemenway   4.0    .7         4    17
+eastern      EA    TB  Savage          4.4    .84        5    20
+northeast    NE    AM Main Jr.         5.1    .94        3    13
+north        NO    Margot Weber        4.5    .89        5    9
+central      CT    Ann Stephens        5.7    .94        5    13                 
