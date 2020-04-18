@@ -1,0 +1,856 @@
+" 编辑相关
+let mapleader = ','
+let maplocalleader = ','
+
+"nnoremap R :source ~/.vimrc<CR>
+nnoremap Y :source $MYVIMRC<CR>
+nnoremap Q :q<CR>
+nnoremap S :w<CR>
+"nnoremap <F2> :g/^\s*$/g<CR>
+nnoremap <leader><SPACE> :nohlsearch<cr>
+noremap <F3> :Autoformat<CR>
+noremap <F2> :Neoformat<cr>
+inoremap jj <esc>
+" map df <esc>
+" omap df <esc>
+" imap df <esc>
+" cmap df <esc>
+
+set pastetoggle=<F1>
+set clipboard=unnamed,unnamedplus
+com! FormatJSON %!python3 -m json.tool
+
+" ctrl+o: 执行某个命令，然后回到insert模式
+" 以下两个其实是默认配置，无需单独设置
+" ctrl+o 0 光标移到行尾
+inoremap <C-o>A <END>
+" ctrl+o a 光标移到行首
+inoremap <C-o>0 <HOME>
+
+" provide hjkl movements in Insert mode via the <Alt> modifier key
+" 如果映射 Command 键，使用D-
+inoremap <A-h> <C-o>h
+inoremap <A-j> <C-o>j
+inoremap <A-k> <C-o>k
+inoremap <A-l> <C-o>l
+inoremap <A-b> <C-o>b
+inoremap <A-w> <C-o>w
+inoremap <A-$> <C-o>$
+inoremap <A-^> <C-o>^
+"inoremap <A-h> <Left>
+"inoremap <A-l> <Right>
+inoremap <A-O> <C-O>O
+inoremap <A-o> <C-o>o
+
+" command line mode
+" provide hjkl movements in Command-line mode via the <Alt> modifier key
+cnoremap <A-h> <Left>
+cnoremap <A-j> <Down>
+cnoremap <A-k> <Up>
+cnoremap <A-l> <Right>
+
+" provide hjkl movements in Insert mode and Command-line mode via the <Alt> modifier key
+noremap! <A-h> <Left>
+noremap! <A-j> <Down>
+noremap! <A-k> <Up>
+noremap! <A-l> <Right>
+
+" autocmd Filetype python nnoremap <buffer><F9> :w<CR> :vert ter python3 "%"<CR>
+" autocmd Filetype python noremap <F9> :echo system('python2 "' . expand('%') . '"')<cr>
+"autocmd Filetype python noremap <F10> :echo system('python3 "' . expand('%') . '"')<cr>
+" autocmd Filetype java nnoremap <F10> :! javac %:t<CR> :! java %:t:r<CR>
+"autocmd Filetype java nnoremap <F10> :cd %:p:h <CR> :! javac %:t<CR> :! java %:t:r<CR>
+
+map sr :set splitright<CR>:vsplit<CR>
+map sl :set nosplitright<CR>:vsplit<CR>
+map su :set nosplitbelow<CR>:split<CR>
+map sd :set splitbelow<CR>:split<CR>
+
+map tu :tabe<CR>
+
+map tn :-tabnext<CR>
+map ti :+tabnext<CR>
+
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+"inoremap ( ()<esc>i
+"inoremap [ []<esc>i
+"inoremap { {}<esc>i
+"inoremap " ""<esc>i
+"inoremap ' ''<esc>i
+" 使用该映射完成成对符号编辑时的跳出工作
+"imap ,, <esc>la
+
+" 命令模式下，z用来完成backspace
+" nnoremap z i<BS><esc>
+
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
+nnoremap <space> za " 代码折叠
+
+"map <up> :res +5<CR>
+"map <down> :res -5<CR>
+"map <left> :vertical resize+5<CR>
+"map <right> :vertical resize-5<CR>
+
+set nocompatible                "不兼容
+filetype on
+filetype indent on
+filetype plugin on
+filetype plugin indent on
+set mouse=a
+set encoding=utf-8
+let &t_ut=''                    "解决某些终端配色不对的问题
+syntax on                       "语法加亮
+set number                      "set nu 显示行号 set nonumber
+" set relativenumber
+
+set tabstop=4                   "set ts=4 tab键四个空格
+set shiftwidth=4                "set sw=4 每层缩进的空格数
+set expandtab                   "set et 自动将tab展开为空格
+set softtabstop=4               "set sts=4 开启et后，每次退格键删除多少个空格
+"set list                       "
+"set listchars=tab:>\
+
+set backspace=indent,eol,start  "退格键可以回到上一行行尾
+
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"    "光标在不同模式下，显示不同形状
+let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+set autochdir                   "vim永远在文件所在的当前目录执行该文件
+
+"重新打开文件时，光标定位在上次关闭该文件所在处
+if has("autocmd")
+    autocmd BufReadPost *
+                \ if line("'\"") > 0 && line("'\"") <= line("$") |
+                \   exe "normal g`\"" |
+                \ endif
+endif
+
+"set autoindent "set ai 自动缩进，新行与当前行同样缩进
+
+"set cindent    "set ci 类似C语言的缩进
+"set smartindent "set si 基于autoindent的一些改进
+"set smarttab   "set sta 行首TAB时，加入sw个空格，否则加入ts个空格
+"set fo+=mB
+"set sm
+"set selection=inclusive
+set wildmenu                    "设置tab补全时显示各种选项
+"set mousemodel=popup
+"set mouse=v
+set cul                         "高亮光标所在行
+set cuc                        "高亮光标所在列
+autocmd InsertEnter * se cul    "用浅色高亮当前行
+set ruler                       "显示标尺
+set showcmd                     "输入的命令显示出来，看的清楚些
+set scrolloff=4                 "光标移动到buffer的顶部和底部时保持4行距离
+
+"set statusline=%F%m%r%h%w\ [format:%{&ff}]\ [type:%Y]\ [pos=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}  "状态行显示的内容
+set laststatus=2                "启动显示状态行(1),总是显示状态行(2)
+
+"set shortmess=atI              "启动的时候不显示那个援助乌干达儿童的提示
+"set showmatch                  "括号匹配
+set history=1000                "历史命令数
+"set highlight                  "高亮显示搜索结果
+set hlsearch                    "
+set incsearch                   "增量搜索
+set cursorline                  "给当前编辑行加上下划线
+set wrap                        "设置折行
+set linebreak                   "set lbr 设置自动换行显示
+set ignorecase                  "忽略大小写
+set smartcase                   "
+
+set clipboard=unnamed           " 让vi访问系统剪贴版
+set fileformat=unix             " 设置unix格式保存文件
+set fenc=utf-8                  " 文件编码
+
+" for plugins
+" https://vimawesome.com for more plugins
+
+call plug#begin('~/.vim/plugged')
+" 开屏界面修改
+Plug 'mhinz/vim-startify'
+
+" 状态栏美化
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" 颜色主题
+Plug 'connorholyday/vim-snazzy'
+Plug 'altercation/vim-colors-solarized'
+Plug 'w0ng/vim-hybrid'
+Plug 'morhetz/gruvbox'
+Plug 'cormacrelf/vim-colors-github'
+
+"  文件管理器
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'majutsushi/tagbar', {'on': 'TagbarOpenAutoClose'}
+
+Plug 'Yggdroot/indentLine'
+
+" Formatter
+Plug 'Chiel92/vim-autoformat'
+Plug 'sbdchd/neoformat'
+
+" 括号添加颜色
+Plug 'kien/rainbow_parentheses.vim'
+
+" Git wrapper
+" Gblame Gstatus Gdiff
+Plug 'tpope/vim-fugitive'
+" 使用GV查看git log
+Plug 'junegunn/gv.vim'
+" 在vim中显示被track的文件的变更
+Plug 'airblade/vim-gitgutter'
+
+" surround made simple
+Plug 'tpope/vim-surround'
+" surround 针对", ', (, [, { ...
+" example: cs"' 将环绕的“修改为'
+"          ds"  删除环绕的"
+"          ysiw<em> 将iw使用em环绕 iw可替换为其他的text object
+
+" comment
+" 说明: gcc 注释单行，也可以前面加数字一次注释多行
+"       gc 目标  注释目标行，例如 gcap，注释整个paragraph
+"       :7,17Commentary 注释7-17行
+"       :g/TODO/Commentary 注释特定行
+Plug 'tpope/vim-commentary'
+
+" Syntax check
+Plug 'w0rp/ale'
+
+" 方便对齐，尤其针对md或者tex中的表格代码
+Plug 'junegunn/vim-easy-align'
+" 在文档中快速搜索并定位
+" 热键设置： ss
+Plug 'easymotion/vim-easymotion'
+
+" Plug 'Valloric/YouCompleteMe'
+Plug 'mbbill/undotree/'
+Plug 'iamcco/markdown-preview.vim'
+Plug 'iamcco/mathjax-support-for-mkdp'
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+
+" 搜索替换
+Plug 'brooth/far.vim'
+
+" 使用Ctrl+P搜索任意文件
+"Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
+
+" ncm plugs for auto completion
+" Plug 'ncm2/ncm2'
+" Plug 'roxma/nvim-yarp'
+" Plug 'ncm2/ncm2-jedi'
+" Plug 'ncm2/ncm2-bufword'
+" Plug 'ncm2/ncm2-path'
+" Plug 'roxma/ncm-clang' " c/c++ support
+" Plug 'sassanh/nvim-cm-eclim' " Java support
+
+" Code completion
+if has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+endif
+Plug 'deoplete-plugins/deoplete-jedi'
+Plug 'zchee/libclang-python3'
+Plug 'deoplete-plugins/deoplete-clang'
+
+" Code completion
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc-java'
+" Plug 'neoclide/coc-python'
+
+" Plug 'python-mode/python-mode', { 'branch': 'develop' }
+
+" 代码模板展开
+Plug 'SirVer/ultisnips'
+" 代码模板
+Plug 'honza/vim-snippets'
+
+" 优化代码折叠
+Plug 'tmhedberg/SimpylFold'
+
+" autopep8, python 代码格式化
+Plug 'tell-k/vim-autopep8'
+" tags auto generate
+Plug 'universal-ctags/ctags'
+Plug 'ludovicchabant/vim-gutentags'
+
+" asyncrun
+Plug 'skywind3000/asyncrun.vim'
+Plug 'skywind3000/vim-preview'
+
+" 新增一些文本对象
+" i, 和 a, ：参数对象，写代码一半在修改，现在可以用 di, / ci, 一次性删除/改写当前参数
+" ii 和 ai ：缩进对象，同一个缩进层次的代码，可以用 vii 选中，dii / cii 删除或改写
+" if 和 af ：函数对象，可以用 vif / dif / cif 来选中/删除/改写函数的内容
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-indent'
+Plug 'kana/vim-textobj-syntax'
+Plug 'kana/vim-textobj-function', { 'for':['c', 'cpp', 'vim', 'java'] }
+Plug 'sgur/vim-textobj-parameter'
+
+"  解决花括号添加时的回车展开问题
+" Plug 'Raimondi/delimitMate'
+
+" 高亮感兴趣的单词
+" 说明: <leader>k 标记
+"       <leader>K 取消标记
+Plug 'lfv89/vim-interestingwords'
+
+" 函数列表
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+" 使用 :A 在源文件和头文件之间切换
+Plug 'vim-scripts/a.vim'
+
+" latex
+" Plug 'vim-latex/vim-latex'
+" Plug 'LaTeX-Box-Team/LaTeX-Box'
+Plug 'lervag/vimtex'
+
+" latex preview, use LLPStartPreview to launch
+" let g:livepreview_previewer = 'your_viewer'
+Plug 'xuhdev/vim-latex-live-preview'
+
+call plug#end()
+" end of plugins
+
+" 希望看到代码折叠时的文档字符串
+let g:SimpyFold_docstring_preview=1
+
+" python support for neovim
+let g:python3_host_prog = expand('/usr/bin/python3')
+
+" airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#fnametruncate = 16
+let g:airline#extensions#tabline#fnamecollapse = 2
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+
+" autopep8
+let g:autopep8_disable_show_diff = 1
+
+" 缩进指示线
+let g:indentLine_char = '|'
+let g:indentLine_enabled = 1
+
+" easy align
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" nvim-completion-manager
+" set shortmess+=c
+" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+" imap <expr> <CR>  (pumvisible() ?  "\<c-y>\<Plug>(expand_or_nl)" : "\<CR>")
+" imap <expr> <Plug>(expand_or_nl) (cm#completed_is_snippet() ? "\<C-U>":"\<CR>")
+" inoremap <c-c> <ESC>
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+
+" ultisnips
+let g:UltiSnipsSnippetsDir = "~/.config/nvim/mySnips"
+let g:UltiSnipsSnippetDirectories = ["~/.config/nvim/mySnips", "mySnips"]
+let g:UltiSnipsExpandTrigger = '<tab>'
+" default forward: c-j backword: c-k
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
+
+
+" NCM2
+" augroup NCM2
+"     autocmd!
+"     " enable ncm2 for all buffers
+"     autocmd BufEnter * call ncm2#enable_for_buffer()
+"     " :help Ncm2PopupOpen for more information
+"     set completeopt=noinsert,menuone,noselect
+"     " When the <Enter> key is pressed while the popup menu is visible, it only
+"     " hides the menu. Use this mapping to close the menu and also start a new line.
+"     inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+"     " uncomment this block if you use vimtex for LaTex
+"     " autocmd Filetype tex call ncm2#register_source({
+"     "           \ 'name': 'vimtex',
+"     "           \ 'priority': 8,
+"     "           \ 'scope': ['tex'],
+"     "           \ 'mark': 'tex',
+"     "           \ 'word_pattern': '\w+',
+"     "           \ 'complete_pattern': g:vimtex#re#ncm2,
+"     "           \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+"     "           \ })
+" augroup END
+" " enable ncm2 for all buffers
+" autocmd BufEnter * call ncm2#enable_for_buffer()
+
+" " IMPORTANT: :help Ncm2PopupOpen for more information
+" set completeopt=noinsert,menuone,noselect
+
+"NERDTree
+map tt :NERDTreeToggle<CR>
+map <leader>g :NERDTreeToggle<CR>
+map <leader>v :NERDTreeFind<CR>
+
+"autocmd vimenter * NERDTree
+"let g:NERDTreeDirArrowExpandable = '▸'
+"let g:NERDTgeeDirArrowCollapsible = '▾'
+
+"ignore files in NERDTree
+let NERDTreeIgnore=['\.pyc$',
+            \'\~$',
+            \'\.pyc$',
+            \'\.pyo$',
+            \'.swp$',
+            \'.DS_Store$',
+            \'__pycache__$',
+            \'.svn$',
+            \]
+
+"NERDTree-git
+let g:NERDTreeIndicatorMapCustom = {
+            \ "Modified"  : "✹",
+            \ "Staged"    : "✚",
+            \ "Untracked" : "✭",
+            \ "Renamed"   : "➜",
+            \ "Unmerged"  : "═",
+            \ "Deleted"   : "✖",
+            \ "Dirty"     : "✗",
+            \ "Clean"     : "✔︎",
+            \ 'Ignored'   : '☒',
+            \ "Unknown"   : "?"
+            \ }
+
+"YouCompleteMe
+" nnoremap gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+" nnoremap g/ :YcmCompleter GetDoc<CR>
+" nnoremap gt :YcmCompleter GetType<CR>
+" nnoremap gr :YcmCompleter GoToReferences<CR>
+" let g:ycm_autoclose_preview_window_after_completion=0
+" let g:ycm_autoclose_preview_window_after_insertion=1
+" let g:ycm_use_clangd=0
+" let g:ycm_python_interpreter_path="/usr/bin/python3"
+" let g:ycm_python_binary_path="/usr/bin"
+
+"Snazzy theme背景透明
+let g:SnazzyTransparent = 1
+set background=dark
+"colorscheme solarized
+"colorscheme Snazzy
+"colorscheme hybrid
+"colorscheme gruvbox
+"colorscheme ron
+colorscheme github
+
+"ale
+"let g:ale_linters = {
+"            \ 'c++': ['clang'],
+"            \ 'c': ['clang'],
+"            \ 'python': ['pylint'],
+"            \}
+let g:ale_linters = {'c':'clang'}
+let g:ale_linters = {'cpp':'clang'}
+let g:ale_linters = {'c++':'clang'}
+
+let b:ale_linters=['pylint']          " 要在目标python环境中安装pylint
+let b:ale_fixers=['autopep8', 'yapf'] " 以及autopep8
+"始终开启标志列
+let g:ale_sign_column_always = 1
+let g:ale_set_highlights = 0
+"自定义error和warning图标
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚡'
+"在vim自带的状态栏中整合ale
+" let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+"显示Linter名称,出错或警告等相关信息
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+"普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
+nmap sp <Plug>(ale_previous_wrap)
+nmap sn <Plug>(ale_next_wrap)
+"<Leader>s触发/关闭语法检查
+nmap <Leader>s :ALEToggle<CR>
+"<Leader>d查看错误或警告的详细信息
+nmap <Leader>d :ALEDetail<CR>
+"文件内容发生变化时不进行检查
+"let g:ale_lint_on_text_changed = 'never'
+"打开文件时不进行检查
+"let g:ale_lint_on_enter = 0
+" 以防中文环境下的Java检测信息出现乱码
+"let g:ale_java_javac_options = '-encoding UTF-8  -J-Duser.language=en'
+let g:ale_linters_explicit = 1
+let g:ale_linters = {
+            \   'csh': ['shell'],
+            \   'zsh': ['shell'],
+            \   'go': ['gofmt', 'golint'],
+            \   'python': ['flake8', 'mypy', 'pylint'],
+            \   'c': ['gcc', 'clang'],
+            \   'cpp': ['gcc', 'clang'],
+            \   'text': [],
+            \}
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:airline#extensions#ale#enabled = 1
+let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
+let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++11'
+let g:ale_c_cppcheck_options = ''
+let g:ale_cpp_cppcheck_options = ''
+
+"Taglist
+map <silent> T :TagbarOpenAutoClose<CR>
+
+" rainbow_parentheses.vim
+let g:rbpt_colorpairs = [ ['brown', 'RoyalBlue3'], ['Darkblue', 'SeaGreen3'], ['darkgray', 'DarkOrchid3'], ['darkgreen', 'firebrick3'],['darkcyan', 'RoyalBlue3'],['darkred', 'SeaGreen3'],['darkmagenta', 'DarkOrchid3'],['brown', 'firebrick3'],['gray', 'RoyalBlue3'],['black',       'SeaGreen3'],['darkmagenta', 'DarkOrchid3'],['Darkblue',  'firebrick3'],['darkgreen', 'RoyalBlue3'],['darkcyan', 'SeaGreen3'],['darkred', 'DarkOrchid3'],['red', 'firebrick3']]
+let g:rbpt_max = 16
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+"MarkdownPreview
+let g:mkdp_path_to_chrome = ""
+" Path to the chrome or the command to open chrome (or other modern browsers).
+" If set, g:mkdp_browserfunc would be ignored.
+
+let g:mkdp_browserfunc = 'MKDP_browserfunc_default'
+"let g:mkdp_browserfunc = ''
+" Callback Vim function to open browser, the only parameter is the url to open.
+
+let g:mkdp_auto_start = 1
+" Set to 1, Vim will open the preview window on entering the Markdown
+" buffer.
+
+let g:mkdp_auto_open = 0
+" Set to 1, Vim will automatically open the preview window when you edit a
+" Markdown file.
+
+let g:mkdp_auto_close = 1
+" Set to 1, Vim will automatically close the current preview window when
+" switching from one Markdown buffer to another.
+
+let g:mkdp_refresh_slow = 0
+" Set to 1, Vim will just refresh Markdown when saving the buffer or
+" leaving from insert mode. With default 0, it will automatically refresh
+" Markdown as you edit or move the cursor.
+
+let g:mkdp_command_for_global = 0
+" Set to 1, the MarkdownPreview command can be used for all files,
+" by default it can only be used in Markdown files.
+
+let g:mkdp_open_to_the_world = 0
+" Set to 1, the preview server will be available to others in your network.
+" By default, the server only listens on localhost (127.0.0.1).
+
+" Markdown edit cmd mapping
+autocmd Filetype markdown inoremap ,f <Esc>/<++><CR>:nohlsearch<CR>c4l
+autocmd Filetype markdown inoremap ,n ---<Enter><Enter>
+autocmd Filetype markdown inoremap ,b **** <++><Esc>F*hi
+autocmd Filetype markdown inoremap ,s ---- <++><Esc>F-hi
+autocmd Filetype markdown inoremap ,i ** <++><Esc>F*i
+autocmd Filetype markdown inoremap ,d `` <++><Esc>F`i
+autocmd Filetype markdown inoremap ,c ```<Enter><++><Enter>```<Enter><Enter><++><Esc>4kA
+autocmd Filetype markdown inoremap ,h ====<Space><++><Esc>F=hi
+autocmd Filetype markdown inoremap ,p ![](<++>) <++><Esc>F[a
+autocmd Filetype markdown inoremap ,a [](<++>) <++><Esc>F[a
+autocmd Filetype markdown inoremap ,1 #<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap ,2 ##<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap ,3 ###<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap ,4 ####<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap ,l --------<Enter>
+
+" 统一用F9来运行各种程序
+
+map <F9> :call CompileRun()<cr>
+
+func! CompileRun()
+    exec "w"
+    if &filetype == 'c'
+        exec "!gcc % -o %<"
+        exec "!time ./%<"
+    elseif &filetype == 'cpp'
+        exec "!g++ % -o %<"
+        exec "!time ./%<"
+    elseif &filetype == 'java'
+        exec "!javac %"
+        exec "!time java -cp %:p:h %:t:r"
+    elseif &filetype == 'sh'
+        exec "!time bash %"
+    elseif &filetype == 'tex'
+        exec "!xelatex %"
+        exec "!xelatex %"
+        exec "!xelatex %"
+    elseif &filetype == 'python'
+        exec "!time python3 %"
+    elseif &filetype == 'html'
+        exec "!/usr/bin/firefox % &"
+        "    elseif &filetype == 'go'
+        "        exec "!go build %<"
+        "        exec "!time go run %"
+        "    elseif &filetype == 'mkd'
+        "        exec "!~/.vim/markdown.pl % > %.html &"
+        "        exec "!firefox %.html &"
+    endif
+endfunc
+
+" tags generate
+set tags=./.tags;,.tags
+" gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+
+" 所生成的数据文件的名称
+let g:gutentags_ctags_tagfile = '.tags'
+
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+
+" 配置 ctags 的参数
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+" asyncrun
+" 自动打开 quickfix window ，高度为 6
+let g:asyncrun_open = 6
+
+" 任务结束时候响铃提醒
+let g:asyncrun_bell = 1
+
+" 设置 F10 打开/关闭 Quickfix 窗口
+nnoremap <F10> :call asyncrun#quickfix_toggle(6)<cr>
+"nnoremap <silent> <F9> :AsyncRun g++ -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
+"nnoremap <silent> <F5> :AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
+
+" delimitMate
+"let delimitMate_expand_cr = 1
+
+"auto close {
+function! s:CloseBracket()
+    let line = getline('.')
+    if line =~# '^\s*\(struct\|class\|enum\) '
+        return "{\<Enter>};\<Esc>O"
+    elseif searchpair('(', '', ')', 'bmn', '', line('.'))
+        " Probably inside a function call. Close it off.
+        return "{\<Enter>});\<Esc>O"
+    else
+        return "{\<Enter>}\<Esc>O"
+    endif
+endfunction
+inoremap <expr> {<Enter> <SID>CloseBracket()
+
+" leaderF
+" CTRL+P 在当前项目目录打开文件搜索
+" CTRL+N 打开 MRU 搜索
+" ALT+P 打开函数搜索
+" ALT+N 打开 Buffer 搜索
+" ALT+M 打开 Tag 搜索
+let g:Lf_ShortcutF = '<c-p>'
+let g:Lf_ShortcutB = '<m-n>'
+noremap <c-n> :LeaderfMru<cr>
+noremap <m-p> :LeaderfFunction!<cr>
+noremap <m-n> :LeaderfBuffer<cr>
+noremap <m-m> :LeaderfTag<cr>
+let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+let g:Lf_WorkingDirectoryMode = 'Ac'
+let g:Lf_WindowHeight = 0.30
+let g:Lf_CacheDirectory = expand('~/.vim/cache')
+let g:Lf_ShowRelativePath = 0
+let g:Lf_HideHelp = 1
+let g:Lf_StlColorscheme = 'powerline'
+let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
+
+" ctrlp
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
+
+" easymotion
+nmap ss <Plug>(easymotion-s2)
+
+" fzf
+" Ag
+" Files
+
+
+" far
+" usage - :Far foo bar **/*.py
+
+" python-mode
+let g:pymode_python = 'python3'
+
+" tagbar
+map <leader>t :TagbarToggle<cr>
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-6.0/lib/libclang.so.1'
+let g:deoplete#sources#clang#clang_header = '/usr/include/clang/6.0/include/'
+" 不显示预览窗口
+"set completeopt-=preview
+
+" coc
+" if hidden is not set, TextEdit might fail.
+" set hidden
+
+" " Some servers have issues with backup files, see #649
+" set nobackup
+" set nowritebackup
+
+" " Better display for messages
+" set cmdheight=2
+
+" " You will have bad experience for diagnostic messages when it's default 4000.
+" set updatetime=300
+
+" " don't give |ins-completion-menu| messages.
+" set shortmess+=c
+
+" " always show signcolumns
+" set signcolumn=yes
+
+" " Use tab for trigger completion with characters ahead and navigate.
+" " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" function! s:check_back_space() abort
+"   let col = col('.') - 1
+"   return !col || getline('.')[col - 1]  =~# '\s'
+" endfunction
+
+" " Use <c-space> to trigger completion.
+" inoremap <silent><expr> <c-space> coc#refresh()
+
+" " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" " Coc only does snippet and additional edit on confirm.
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" " Use `[c` and `]c` to navigate diagnostics
+" nmap <silent> [c <Plug>(coc-diagnostic-prev)
+" nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+" " Remap keys for gotos
+" nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gy <Plug>(coc-type-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
+" nmap <silent> gr <Plug>(coc-references)
+
+" " Use K to show documentation in preview window
+" nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   else
+"     call CocAction('doHover')
+"   endif
+" endfunction
+
+" " Highlight symbol under cursor on CursorHold
+" autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" " Remap for rename current word
+" nmap <leader>rn <Plug>(coc-rename)
+
+" " Remap for format selected region
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
+
+" augroup mygroup
+"   autocmd!
+"   " Setup formatexpr specified filetype(s).
+"   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+"   " Update signature help on jump placeholder
+"   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+" augroup end
+
+" " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+" xmap <leader>a  <Plug>(coc-codeaction-selected)
+" nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" " Remap for do codeAction of current line
+" nmap <leader>ac  <Plug>(coc-codeaction)
+" " Fix autofix problem of current line
+" nmap <leader>qf  <Plug>(coc-fix-current)
+
+" " Use <tab> for select selections ranges, needs server support, like: coc-tsserver, coc-python
+" nmap <silent> <TAB> <Plug>(coc-range-select)
+" xmap <silent> <TAB> <Plug>(coc-range-select)
+" xmap <silent> <S-TAB> <Plug>(coc-range-select-backword)
+
+" " Use `:Format` to format current buffer
+" command! -nargs=0 Format :call CocAction('format')
+
+" " Use `:Fold` to fold current buffer
+" command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" " use `:OR` for organize import of current buffer
+" command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" " Add status line support, for integration with other plugin, checkout `:h coc-status`
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" " Using CocList
+" " Show all diagnostics
+" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" " Manage extensions
+" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" " Show commands
+" nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" " Find symbol of current document
+" nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" " Search workspace symbols
+" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" " Do default action for next item.
+" nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" " Do default action for previous item.
+" nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" " Resume latest coc list
+" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+
+" latex-preview
+let g:livepreview_previewer = 'evince'
+let g:livepreview_engine = 'xelatex' " . ' [options]'
+ret g:livepreview_cursorhold_recompile = 0
+
+" vimtex
+
+let g:vimtex_compiler_latexrun_engines = {
+    \ '_'                : 'xelatex',
+    \ 'pdflatex'         : 'pdflatex',
+    \ 'lualatex'         : 'lualatex',
+    \ 'xelatex'          : 'xelatex',
+        \}
+let g:tex_flavor = 'latex'
+let g:vimtex_view_method = 'zathura'
+let g:vimtex_view_genreal_viewer = '/usr/local/bin/zathura'
+let g:vimtex_quickfix_mode = 0
+" set conceallevel=1
+" let g:tex_conceal = 'abdmg'
+
