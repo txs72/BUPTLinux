@@ -1,0 +1,247 @@
+%
+%  Actor Transaction Diagram
+%
+%  Created by Gabor Tjong A Hung on 2008-10-28.
+%  Copyright (c) 2008. All rights reserved.
+%
+\documentclass[]{article}
+\usepackage{verbatim}
+
+\begin{comment}
+:Title: Actor Transaction Diagram
+
+A sample of a global Actor Transaction Diagram or ATD of the 
+`Design & Engineering Methodology for Organizations (DEMO) methodology`__. 
+The most interesting part of the example is the definition of the custom 
+``square`` arrow the and ``diamond in circle`` node shape.
+
+**Note**: The ``square`` arrow is now available in the CVS version of PGF. 
+In the example the arrow shape has been renamed to ``squarea`` to avoid conflict.
+
+.. __: http://softwaredesign.nl/index.php?pageID=28
+\end{comment}
+
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetikzlibrary{arrows,positioning,fit,shapes,calc}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A square shaped arrow
+% The arrow has been renamed to squarea to avoid conflict with the square arrow
+% defined in the CVS version of PGF
+
+\newdimen\arrowsize
+\pgfarrowsdeclare{squarea}{squarea}
+{
+  \arrowsize=0.4pt
+  \advance\arrowsize by.275\pgflinewidth%
+  \pgfarrowsleftextend{+-\arrowsize}
+  \advance\arrowsize by.5\pgflinewidth
+  \pgfarrowsrightextend{+\arrowsize}
+}
+{
+  \arrowsize=0.4pt
+  \advance\arrowsize by.275\pgflinewidth%
+  \pgfsetdash{}{+0pt}
+  \pgfsetroundjoin
+  \pgfpathmoveto{\pgfqpoint{1\arrowsize}{4\arrowsize}}
+  \pgfpathlineto{\pgfqpoint{-7\arrowsize}{4\arrowsize}}
+  \pgfpathlineto{\pgfqpoint{-7\arrowsize}{-4\arrowsize}}
+  \pgfpathlineto{\pgfqpoint{1\arrowsize}{-4\arrowsize}}
+  \pgfpathclose
+  \pgfusepathqfillstroke
+}
+% A open square shaped arrow
+
+\pgfarrowsdeclare{open squarea}{open squarea}%{{-.5bp}{8.5bp}}
+{
+  \arrowsize=0.4pt
+  \advance\arrowsize by.275\pgflinewidth%
+  \pgfarrowsleftextend{+-.5\pgflinewidth}
+  \advance\arrowsize by7\arrowsize
+  \advance\arrowsize by.5\pgflinewidth
+  \pgfarrowsrightextend{+\arrowsize}
+}
+{
+  \arrowsize=0.4pt
+  \advance\arrowsize by.275\pgflinewidth%
+  \pgfsetdash{}{+0pt}
+  \pgfsetroundjoin
+  \pgfpathmoveto{\pgfqpoint{8\arrowsize}{4\arrowsize}}
+  \pgfpathlineto{\pgfqpoint{0\arrowsize}{4\arrowsize}}
+  \pgfpathlineto{\pgfqpoint{0\arrowsize}{-4\arrowsize}}
+  \pgfpathlineto{\pgfqpoint{8\arrowsize}{-4\arrowsize}}
+  \pgfpathclose
+  \pgfusepathqstroke
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A circle and diamond shape
+\makeatletter
+\newdimen\tempa
+\newdimen\tempb
+\pgfdeclareshape{diamond in circle}{
+\inheritsavedanchors[from=diamond] % this is a diamond
+\inheritsavedanchors[from=circle] % this is a circle
+\inheritanchorborder[from=circle]
+\inheritanchor[from=circle]{center}
+\inheritanchor[from=circle]{radius}
+\inheritanchor[from=circle]{north}
+\inheritanchor[from=circle]{south}
+\inheritanchor[from=circle]{east}
+\inheritanchor[from=circle]{west}
+\inheritanchor[from=circle]{anchorborder}
+  \saveddimen\radius{%
+    %
+    % Caculate ``height radius''
+    %
+    \pgf@ya=.5\ht\pgfnodeparttextbox%
+    \advance\pgf@ya by.5\dp\pgfnodeparttextbox%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/inner ysep}}%
+    \advance\pgf@ya by\pgf@yb%
+    %
+    % Caculate ``width radius''
+    %
+    \pgf@xa=.5\wd\pgfnodeparttextbox%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/inner xsep}}%
+    \advance\pgf@xa by\pgf@xb%
+    %
+    % Calculate length of radius vector:
+    %
+    \pgf@process{\pgfpointnormalised{\pgfqpoint{\pgf@xa}{\pgf@ya}}}%
+    \ifdim\pgf@x>\pgf@y%
+        \c@pgf@counta=\pgf@x%
+        \ifnum\c@pgf@counta=0\relax%
+        \else%
+          \divide\c@pgf@counta by 255\relax%
+          \pgf@xa=16\pgf@xa\relax%
+          \divide\pgf@xa by\c@pgf@counta%
+          \pgf@xa=16\pgf@xa\relax%
+        \fi%
+      \else%
+        \c@pgf@counta=\pgf@y%
+        \ifnum\c@pgf@counta=0\relax%
+        \else%
+          \divide\c@pgf@counta by 255\relax%
+          \pgf@ya=16\pgf@ya\relax%
+          \divide\pgf@ya by\c@pgf@counta%
+          \pgf@xa=16\pgf@ya\relax%
+        \fi%
+    \fi%
+    \pgf@x=\pgf@xa%
+    %
+    % If necessary, adjust radius so that the size requirements are
+    % met:
+    %
+    \pgfmathsetlength{\pgf@xb}{\pgfkeysvalueof{/pgf/minimum width}}%
+    \pgfmathsetlength{\pgf@yb}{\pgfkeysvalueof{/pgf/minimum height}}%
+    \ifdim\pgf@x<.5\pgf@xb%
+        \pgf@x=.5\pgf@xb%
+    \fi%
+    \ifdim\pgf@x<.5\pgf@yb%
+        \pgf@x=.5\pgf@yb%
+    \fi%
+    %
+    % Now, add larger of outer sepearations.
+    %
+    \pgfmathsetlength{\pgf@xb}{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength{\pgf@yb}{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \ifdim\pgf@xb<\pgf@yb%
+      \advance\pgf@x by\pgf@yb%
+    \else%
+      \advance\pgf@x by\pgf@xb%
+    \fi%
+  }
+\backgroundpath{
+    \tempa=\radius
+    \pgfmathsetlength{\pgf@xb}{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength{\pgf@yb}{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \ifdim\pgf@xb<\pgf@yb%
+      \advance\tempa by-\pgf@yb%
+    \else%
+      \advance\tempa by-\pgf@xb%
+    \fi%
+    \pgfpathmoveto{\centerpoint\advance\pgf@x by\radius}%
+    \pgfpathlineto{\centerpoint\advance\pgf@y by\radius}%
+    \pgfpathlineto{\centerpoint\advance\pgf@x by-\radius}%
+    \pgfpathlineto{\centerpoint\advance\pgf@y by-\radius}%
+    \pgfpathclose%
+  }
+\behindbackgroundpath{
+    \tempa=\radius%
+    \pgfmathsetlength{\pgf@xb}{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength{\pgf@yb}{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \ifdim\pgf@xb<\pgf@yb%
+      \advance\tempa by-\pgf@yb%
+    \else%
+      \advance\tempa by-\pgf@xb%
+    \fi%
+    \pgfpathcircle{\centerpoint}{\tempa}%
+  }
+}
+\makeatother
+
+
+\newcommand{\parameter}[1]{$\langle\mbox{#1}\rangle$}
+\title{A LaTeX Article}
+\author{Gabor Tjong A Hung}
+
+\begin{document}
+
+\tikzset{
+every transaction/.style = {fill=white!100},
+transaction/.style = {diamond in circle, draw, minimum size=6mm, every transaction},
+every actor role/.style = {},
+actor role/.style = {rectangle, draw=black!80, ultra thick,
+    minimum size = 6mm, every actor role},
+composite actor role/.style = {fill=gray!80, actor role},
+elementary actor role/.style = {fill=white!100, actor role},
+initiator/.style = {-},
+executor/.style = {<-, >=squarea},
+system/.style = {rectangle, fill=white!100, ultra thick, draw=black!80,
+            minimum height=60mm, minimum width=4cm,outer sep=0pt}}
+
+
+\begin{figure}[h]
+\centering
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+\begin{tikzpicture}[node distance=1cm, on grid]
+    \begin{pgfonlayer}{background}
+        \node [system] (system) at (0,3){};
+    \end{pgfonlayer}
+    \node [composite actor role] (CA01) [minimum height=48mm] at ( -4,3) {CA01};
+    \node [above] at (CA01.north) {Client};
+    \node [transaction] (T01) at( $(system.south west)!.66!(system.north west)$)
+        {T01} edge [initiator] (CA01.south east |- T01);
+    \node [composite actor role] (CA03) at ( $(system.south)!.66!(system.north)$)
+        {CA03} edge [executor] (T01);
+    \node [above] at (CA03.north) {GDSS facilitator};
+    \node [transaction] (T02) at ( $(system.south east)!.66!(system.north east)$)
+        {T02} edge  [initiator] (CA03);
+    \path (T02)++(2,0) node [composite actor role] (CA02) [minimum height=24mm] 
+        {CA02} edge  [executor] (T02);
+    \node [above] at (CA02.north) {Participant};
+    \node [transaction] (T03) at ( $(system.south west)!.33!(system.north west)$)
+        {T03} edge  [initiator] (CA01.south east |- T03);
+    \node [composite actor role] (CA04) at ( $(system.south)!.33!(system.north)$)
+        {CA04} edge  [executor] (T03);
+    \node [above] at (CA04.north) {GDSS analysist};
+\end{tikzpicture}
+\\[2em]
+    \begin{tabular}{@{T}l@{ }l@{ }p{5cm}}
+        \toprule
+        ID & Transaction Type (T) & Result Type (R)\\
+        \midrule
+        01 & Facilitate meeting &  Meeting has been facilitated.\\
+        02 & Perform Agendum &  Agendum has been performed by \parameter{participant}
+         on \parameter{time}.\\
+        03 & Analysis &  Analysis has been made.\\
+        \bottomrule
+    \end{tabular}\label{tab:trt_datd}
+    \caption{Global ATD}
+\end{figure}
+
+\end{document}

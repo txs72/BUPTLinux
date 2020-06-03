@@ -1,0 +1,92 @@
+% Snowflakes with TikZ
+% Author: JLDiaz
+\documentclass{article}
+\usepackage[textwidth=6cm]{geometry}% just for the preview
+\usepackage{tikz}
+%%%<
+\usepackage{verbatim}
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{center}
+\setlength\PreviewBorder{10pt}%
+%%%>
+\begin{comment}
+:Title: Snowflakes with TikZ
+:Tags: Fractals;Decorative drawings
+:Author: JLDiaz
+:Slug: snowflakes
+
+One of the easiest approach for drawing snowflakes with TikZ
+is using Lindenmayer systems.
+
+This code defines Lindenmayer rules for drawing a single "arm"
+of the snowflake. Symmetry should be crucial. Then this arm is
+repeated rotated 60 degrees each time to produce the complete snowflake.
+
+By changing the Lindenmayer rules, the angle and the line width, you
+can get a lot of nice variations.
+
+You may notice some scaling, this is just for getting similar
+dimensions, because we have different line widths.
+
+This code was written by JLDiaz and published on TeX.SE.
+\end{comment}
+\usetikzlibrary{lindenmayersystems}
+
+\pgfdeclarelindenmayersystem{A}{
+    \rule{F -> FF[+F][-F]}
+}
+
+\pgfdeclarelindenmayersystem{B}{
+    \rule{F -> ffF[++FF][--FF]}
+}
+
+\pgfdeclarelindenmayersystem{C}{
+    \symbol{G}{\pgflsystemdrawforward}
+    \rule{F -> F[+F][-F]FG[+F][-F]FG}
+}
+
+\pgfdeclarelindenmayersystem{D}{
+    \symbol{G}{\pgflsystemdrawforward}
+    \symbol{H}{\pgflsystemdrawforward}
+    \rule{F -> H[+HG][-HG]G}
+    \rule{G -> HF}
+}
+
+\tikzset{
+    type/.style={l-system={#1, axiom=F,order=3,step=4pt,angle=60},
+      blue, opacity=0.4, line width=.5mm, line cap=round   
+    },
+}
+
+\newcommand\drawsnowflake[2][scale=0.2]{
+    \tikz[#1]
+    \foreach \a in {0,60,...,300}  {
+    \draw[rotate=\a,#2] l-system;
+    };
+}
+
+\begin{document}
+\begin{center}
+\foreach \width in {.2,.4,...,.8} 
+{  \drawsnowflake[scale=0.3]{type=A, line width=\width mm} }
+
+\foreach \width in {.2,.4,...,.8} 
+{  \drawsnowflake[scale=0.38]{type=A, l-system={angle=90}, line width=\width mm} }    
+
+\foreach \width in {.2,.4,...,.8} 
+{  \drawsnowflake[scale=0.3]{type=B, line width=\width mm} }
+
+\foreach \width in {.2,.4,...,.8} 
+{  \drawsnowflake{type=B, l-system={angle=30}, line width=\width mm} }
+
+\drawsnowflake[scale=0.24]{type=C, l-system={order=2}, line width=0.2mm}
+\drawsnowflake[scale=0.25]{type=C, l-system={order=2}, line width=0.4mm}
+\drawsnowflake[scale=0.25]{type=C, l-system={order=2,axiom=fF}, line width=0.2mm}
+\drawsnowflake[scale=0.32]{type=C, l-system={order=2,axiom=---fff+++F}, line width=0.2mm}
+
+\drawsnowflake[scale=0.38]{type=D, l-system={order=4,angle=60,axiom=GF}, line width=0.7mm}
+\drawsnowflake[scale=0.38]{type=D, l-system={order=4,angle=60,axiom=GfF}, line width=0.7mm}
+\drawsnowflake[scale=0.38]{type=D, l-system={order=4,angle=60,axiom=FG}, line width=0.7mm}
+\drawsnowflake[scale=0.38]{type=D, l-system={order=4,angle=60,axiom=FfG}, line width=0.7mm}
+\end{center}
+\end{document}

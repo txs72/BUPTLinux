@@ -933,10 +933,26 @@ snippet template "Basic template" b
 % !TEX program = xelatex
 \documentclass{article}
 \usepackage{xeCJK} %调用 xeCJK 宏包
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{xfrac}
-
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{color, pgf, multicol, float, ulem}
+\usepackage{xfrac, animate, indentfirst}
+\usepackage{titletoc, titlesec}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage[xetex,
+	colorlinks,
+	linkcolor=blue,%
+	filecolor=magenta,
+	urlcolor=cyan,
+	citecolor=orange,
+	hyperindex,%
+	pdfstartview=FitH,%
+	plainpages=false,%
+	pdftitle=title,%
+	bookmarksopen=true,%
+	CJKbookmarks] 
+	{hyperref}
+\usepackage{dcolumn, longtable, multirow, booktabs}
 %\usepackage{geometry}
 %\geometry{papersize={15cm,25cm}}
 %\geometry{left=1cm,right=2cm,top=3cm,bottom=2cm}
@@ -960,33 +976,84 @@ snippet template "Basic template" b
 %在原有的基础上，增加段间距 0.4em
 \addtolength{\parskip}{.4em}
 
-\setCJKmainfont[BoldFont=STZhongsong, ItalicFont=STKaiti]{宋体}%或{STSong}
+\setCJKmainfont[BoldFont=STZhongsong, ItalicFont=KaiTi]{宋体}%或{STSong}
 \setCJKsansfont[BoldFont=STHeiti]{黑体}% 或{STXihei}
 \setCJKmonofont{仿宋} % 或{STFangsong}
 
+\numberwithin{equation}{section}%公式按章节进行编号
+\numberwithin{figure}{subsection}%图片按子章节编号
+\renewcommand{\contentsname}{目录}
+\renewcommand{\listfigurename}{插图目录}
+\renewcommand{\listtablename}{表格目录}
+\renewcommand{\indexname}{索引}
+\renewcommand{\tablename}{表}
+\renewcommand{\figurename}{图}
+\renewcommand\appendixname{附录}
+\renewcommand\partname{部分}
+% \renewcommand\chaptername{章节}
+% article only
+\renewcommand{\refname}{参考文献}
+\renewcommand{\abstractname}{摘要}
+
 \title{Hello，world!}
-\author{txs}
+\author{Young}
 \date{\today}
 
 \begin{document}
 \maketitle
 \tableofcontents
 
-测试中文
-${1:body}
+${1:就从这里开始}
 
-\section{sec1}
-\subsection{ssec1}
-\subsection{ssec2}
-\paragraph{para1}
-\subparagraph{sub-para1}
+\section{小节}\label{sec:first}
+小节内容
+\subsection{子小节}
+\begin{equation}
+E = mc^2
+S_i = \sum_{i=0}^{100} k_i + \sigma_i + \frac{f(i)}{g(i)}
+\end{equation}
+
+插入一张图片
+    \begin{center}
+     \includegraphics[width=0.5\textwidth]{images/buptlogo}
+     \end{center}
+
+\subsection{子小节}
+正文引用示例，这里引用了第\ref{sec:first}小节
+\paragraph{段落}
+段落内容
+\subparagraph{子段落}
+子段落内容
+
+\section{另一小节}
+插入一段代码
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+int main(int argc, char** argv){
+    printf("世界，你好!\n");
+    return 0;
+}
+\end{lstlisting}
+\subsection{子小节}
+子小节内容
+\subsection{子小节}
+子小节内容
+参考文献引用示例，这里引用了\cite{smith}
+\paragraph{段落}
+参考文献引用示例，这里引用了\cite{mark}
+\subparagraph{子段落}
+子段落内容
 
 
-\section{中文2}
-\subsection{中文3}
-\subsection{中文4}
-\paragraph{中文5}
-\subparagraph{中文6}
+
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Smith, 2012]{smith} John Smith (2012)
+\newblock Title of the publication
+\newblock \emph{Journal Name} 12(3), 45 -- 678.
+\bibitem[Mark, 2018]{mark} Mark Williams (2018)
+\bibitem[George, 2008]{george} George Warsaw (2008) 
+\end{thebibliography}
+
 \end{document}
 
 endsnippet
@@ -1181,7 +1248,7 @@ snippet beamertemplate "Basic beamer template with example text" b
 \usepackage{animate}
 \usepackage{indentfirst}
 
-\setCJKmainfont[BoldFont=STZhongsong, ItalicFont=STKaiti]{宋体}%或{STSong}
+\setCJKmainfont[BoldFont=STZhongsong, ItalicFont=KaiTi]{宋体}%或{STSong}
 \setCJKsansfont[BoldFont=STHeiti]{黑体}% 或{STXihei}
 \setCJKmonofont{仿宋} % 或{STFangsong}
 

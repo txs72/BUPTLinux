@@ -1,0 +1,12 @@
+\documentclass[tikz,convert=pdf2svg]{standalone}
+\usepackage{tikz}
+\begin{document}
+    \begin{tikzpicture}
+        \node {root}
+            child {node {a1}}
+            child {node {a2}
+                child {node {b1}}
+                child {node {b2}}}
+            child {node {a3}};
+    \end{tikzpicture}
+\end{document}

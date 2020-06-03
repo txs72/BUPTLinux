@@ -1,0 +1,47 @@
+Title: Net soos ek is
+Poet: Charlotte Elliott
+Style: SATB
+Sharps: 2
+Meter: 3/4
+Pages: 1
+Systems: 4
+Space: 0 4
+%%\font\elevensf=cmss10 scaled \magstephalf\elevensf
+
+{vers1}
+1. Net soos ek is, geen hulp na-by, al-leen U bloed ge-stort vir my,
+ge-trek tot U deur-boor-de sy, O Lam van God, ek kom.
+
+{vers2}
+2. Net soos ek is, nooi U vir my, ver-ge-we rei-nig en be-vry,
+Dan wy ek my vir e-wig, Heer. O Lam van God, ek kom.
+
+{vers3}
+3. Net soos ek is, U lief-de teer, werp al-le hin-der-pa-le neer.
+op U be-lof-te steun ek bly, O Lam van God, ek kom.
+
+{koor1}{koor2}
+Net soos ek is, net soos ek is, O Lam van God, ek kom. 
+
+{koort}
+Net soos ek is, O Lam van God, ek kom. 
+
+f f f | e2s e4  | f2 b4 | a2d | g4 g g | f2 f4  | g2 c4n | b2d  |
+L: {vers1,vers2,vers3}
+d d d | d2r d4r | d2 d4 | d2d | e4 e e | d2s d4 | e2 f4  | f2d  |
+a a a | g2s g4  | a2 g4 | a2d | b4 b b | c2n c4 | b2 e4  | ds2d |
+d d d | d2 d4   | d2 g4 | f2d | e4 e e | a2 a4  | g2 g4  | b2d  |
+
+b4 b c  | d2  a4 | g2 a4  | f2 f4 | e2 a4  | ( d4 c ) b | a2d || 
+g4 g e  | d2  d4 | d2 c4  | d2 d4 | b2 e4  | ( f4 e ) d | c2d || 
+b4 b bf | a2  a4 | b2 a4  | a2 a4 | g2s a4 | a2 g4s     | a2d || 
+e4- e g | f2 f4  | e2 a4- | d2 d4 | d2 c4  | ( b4 e ) e | a2d || 
+
+@+4 b4 b b  | b2d    | a4 a a | a2d     | d4 e- f  | g2 e4    | d2d of
+L: {koor1}
+    d4s g f | e2d    | e4 f e | d2d     | d4 dr d  | d2 c4    | d2d
+@-7 r2db    | b4 e d | c2d    | a4 d c  | ( b2d | b2 ) g4     | f2d
+LT: {koort}
+@-8 a4 a a  | g2d    | g4 g g | f2d     | b4- g+ f | e2 a4-   | d2d
+L: {koor2}
+

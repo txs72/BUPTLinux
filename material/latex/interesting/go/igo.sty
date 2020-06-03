@@ -1,0 +1,731 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% File          : igo.sty
+%% Version       : 0.62
+%% Date          : Latest release January 2007. Major releases in April 2003 and February 2006
+%% Authors       : Étienne Dupuis (igo@lestourtereaux.fr)
+%%               : Improvements by Nikolay Nemov (nine@che.nsk.su)
+%% Purpose       : A TeX package to manipulate Go games and positions.
+%% Documentation : igo.tex
+%% Credits       : Based on Hanna Kolodziejska's go.sty version 0.05, 11/1991
+%%               : Uses Victor Eijkhout's ultimate loop macro (repeat.tex).
+%% Requires      : <repeat.tex>, version 0.93, 05/2003.
+%% History       : April 2003 - Version 0.50 - Initial release by É. Dupuis
+%%               : January 2004 - Version 0.51 - Added a '%', thanks to P. Chalmoviansky
+%%               : February 2006 - Version 0.60 - Improvements by N. Nemov and É. Dupuis, thanks to F. Mittelbach
+%%               : April 2006 - Version 0.61 - Fixed \igo@char so that \clearstonesymbols works correctly
+%%               : January 2007 - Version 0.62 - Improvements by N. Nemov (command \gobansymbols)
+%% License       : This work may be distributed and/or modified under the
+%%               : conditions of the LaTeX Project Public License, either version 1.3
+%%               : of this license or (at your option) any later version.
+%%               : The latest version of this license is available at
+%%               : http://www.latex-project.org and version 1.3 or later is part
+%%               : of all distributions of LaTeX since December 2005.
+%%               : This package has the LPPL maintenance status ‘maintained’, the
+%%               : current maintainer being the original author, É. Dupuis.
+%%               : This package consists of the stylesheet igo.sty, the documentation
+%%               : igo.tex and the related font files.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\typeout{%
+^^J++++++++++++++++++++++++++++++++++++++++++++++++++++++
+^^J++++++++++++ igo.sty - January 2007 - 0.62 +++++++++++
+^^J+ A TeX package to manipulate Go games and positions +
+^^J++++++++++++++++++++++++++++++++++++++++++++++++++++++^^J}%
+
+\input{repeat.tex}
+
+\catcode`@=11
+\catcode`|=11
+\catcode`;=11
+
+\newcount\igo@count
+\newcount\igo@endwhile
+
+\newcount\igo@fontsize
+
+\newcount\igo@minrow
+\newcount\igo@maxrow
+\newcount\igo@mincol
+\newcount\igo@maxcol
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Copied from latex.ltx
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\long\def\igo@first#1#2{#1}
+\long\def\igo@second#1#2{#2}
+\def\igo@ifundefined#1{%
+	\expandafter\ifx\csname#1\endcsname\relax%
+		\expandafter\igo@first%
+	\else%
+		\expandafter\igo@second%
+	\fi%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Drawing fonts (Copied from go.sty)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newbox\igo@box
+\newdimen\igo@dimen
+
+\def\igo@fonts#1{%
+	\global\font\igo@font=igo#1 at #1truept%
+	\global\font\igo@blackfonti=igoblacki#1 at #1truept%
+	\global\font\igo@whitefonti=igowhitei#1 at #1truept%
+	\global\font\igo@blackfontii=igoblackii#1 at #1truept%
+	\global\font\igo@whitefontii=igowhiteii#1 at #1truept%
+	\global\font\igo@blackfontiii=igoblackiii#1 at #1truept%
+	\global\font\igo@whitefontiii=igowhiteiii#1 at #1truept%
+	\global\setbox\igo@box=\hbox{\igo@font\char0}%
+	\global\igo@dimen=\wd\igo@box%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Characters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igonone{999}
+
+\def\igotriangle{-1}
+\def\igosquare{-2}
+\def\igocircle{-3}
+\def\igocross{-4}
+
+\def\igo@char#1#2{%
+	\ifnum #2=\igotriangle\relax%
+		\csname igo@#1fontiii\endcsname\char127\relax%
+	\else%
+	\ifnum #2=\igosquare\relax%
+		\csname igo@#1fontiii\endcsname\char126\relax%
+	\else%
+	\ifnum #2=\igocircle\relax%
+		\csname igo@#1fontiii\endcsname\char125\relax%
+	\else%
+	\ifnum #2=\igocross\relax%
+		\csname igo@#1fontiii\endcsname\char124\relax%
+	\else%
+	\ifnum #2<0\relax%
+		\errmessage{Stone number must be positive.}%
+	\else%
+	\ifnum #2<128\relax%
+		\csname igo@#1fonti\endcsname\char#2\relax%
+	\else%
+	\ifnum #2<256\relax%
+		\csname igo@#1fontii\endcsname%
+		\igo@count=#2\advance\igo@count by -128%
+		\char\igo@count\relax%
+	\else%
+	\ifnum #2<380\relax%
+		\csname igo@#1fontiii\endcsname%
+		\igo@count=#2\advance\igo@count by -256%
+		\char\igo@count\relax%
+	\else%
+	\ifnum #2<\igonone\relax%
+		\errmessage{Stone number is too large.}%
+	\else\relax%
+		\csname igo@#1fonti\endcsname\char0\relax% 
+	\fi\fi\fi\fi\fi\fi\fi\fi\fi%
+}
+
+\def\igo@wchar#1{\igo@char{white}{#1}}
+\def\igo@bchar#1{\igo@char{black}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Display sizes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igofontsize#1{%
+	\ifnum #1>17\relax%
+		\global\igo@fontsize=20\relax%
+		\igo@fonts{20}\relax%
+	\else%
+	\ifnum #1>13\relax%
+	\global\igo@fontsize=15\relax%
+		\igo@fonts{15}\relax%
+	\else%  
+	\ifnum #1>12\relax% 
+		\global\igo@fontsize=12\relax%
+		\igo@fonts{12}\relax%
+	\else%
+	\ifnum #1<5\relax%
+		\global\igo@fontsize=5\relax%
+		\igo@fonts{5}\relax%
+	\else%
+		\global\igo@fontsize=#1\relax%
+		\igo@fonts{#1}\relax%
+	\fi\fi\fi\fi%
+}  
+
+\def\smallgoban{%
+	\global\igo@fontsize=10%
+	\igo@fonts{10}%
+}
+
+\def\normalgoban{%
+	\global\igo@fontsize=15%
+	\igo@fonts{15}%
+}
+
+\def\largegoban{%
+	\global\igo@fontsize=20%
+	\igo@fonts{20}%
+}
+
+\smallgoban
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Support for multiple boards
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcount\igo@board
+
+\def\usegoban#1{%
+	\ifnum #1<0 \errmessage{Positive number expected.} \fi%
+	\global\igo@board=#1%
+}
+
+\usegoban{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Support for various board sizes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igo@size{\csname igo@size|\number0\endcsname}
+
+\def\gobansize#1{%
+	\ifnum #1<2 \errmessage{Goban size must be between 2 and 50.} \fi%
+	\ifnum #1>50 \errmessage{Goban size must be between 2 and 50.} \fi%
+	\expandafter\gdef\csname igo@size|\number0\endcsname{#1}%
+}
+
+\gobansize{19}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Coordinate system
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igo@rowlabel#1{\number#1}
+\def\igo@columnlabel#1{\ifcase #1i\or a\or b\or c\or d\or e\or f\or g\or h\or j\or k\or l\or m\or n\or o\or p\or q\or r\or s\or t\or u\or v\or w\or x\or y\or z\or A\or B\or C\or D\or E\or F\or G\or H\or J\or K\or L\or M\or N\or O\or P\or Q\or R\or S\or T\or U\or V\or W\or X\or Y\or Z\else I\fi}
+
+\def\igo@intersectionlabel#1#2{\igo@columnlabel{#1}\igo@rowlabel{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Hoshi points
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\expandafter\def\csname igo@hoshi;e5;9\endcsname{1}
+\expandafter\def\csname igo@hoshi;c3;9\endcsname{1}
+\expandafter\def\csname igo@hoshi;c7;9\endcsname{1}
+\expandafter\def\csname igo@hoshi;g3;9\endcsname{1}
+\expandafter\def\csname igo@hoshi;g7;9\endcsname{1}
+
+\expandafter\def\csname igo@hoshi;d4;13\endcsname{1}
+\expandafter\def\csname igo@hoshi;g7;13\endcsname{1}
+\expandafter\def\csname igo@hoshi;d10;13\endcsname{1}
+\expandafter\def\csname igo@hoshi;k4;13\endcsname{1}
+\expandafter\def\csname igo@hoshi;k10;13\endcsname{1}
+
+\expandafter\def\csname igo@hoshi;k10;19\endcsname{1}
+\expandafter\def\csname igo@hoshi;d4;19\endcsname{1}
+\expandafter\def\csname igo@hoshi;d16;19\endcsname{1}
+\expandafter\def\csname igo@hoshi;q4;19\endcsname{1}
+\expandafter\def\csname igo@hoshi;q16;19\endcsname{1}
+\expandafter\def\csname igo@hoshi;d10;19\endcsname{1}
+\expandafter\def\csname igo@hoshi;k4;19\endcsname{1}
+\expandafter\def\csname igo@hoshi;k16;19\endcsname{1}
+\expandafter\def\csname igo@hoshi;q10;19\endcsname{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Stones on board.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igo@supergoban#1#2#3{\expandafter\xdef\csname igo@stone;#1|\number#3\endcsname{#2}}
+\def\igo@goban#1#2{\igo@supergoban{#1}{#2}{\igo@board}}
+
+\def\igo@superstone#1#2#3{\csname igo@stone;\igo@intersectionlabel{#1}{#2}|\number#3\endcsname\relax}
+\def\igo@stone#1#2{\igo@superstone{#1}{#2}{\igo@board}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Adding white or stones
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igo@eatbrackets[#1]{}
+
+\def\white{\futurelet\igo@nextchar\igo@optionalwhite}
+\def\igo@optionalwhite{\ifx[\igo@nextchar\let\igo@newmacro\igo@manywhiten\else\let\igo@newmacro\igo@manywhite\fi\igo@newmacro}
+
+\def\igo@whiten[#1]#2{\igo@goban{#2}{\igo@wchar{#1}}}
+\def\igo@white#1{\igo@whiten[0]{#1}}
+
+\def\igo@manywhite#1{\igo@recursivewhite#1,,}
+\def\igo@recursivewhite#1,{\def\igo@end{}\def\igo@arg{#1}\ifx\igo@arg\igo@end\else\igo@white{#1}\expandafter\igo@recursivewhite\fi}
+
+\def\igo@manywhiten[#1]#2{\igo@recursivewhiten[#1]#2,,}
+\def\igo@recursivewhiten[#1]#2,{%
+	\edef\igo@one{#1}%
+	\igo@count=\igo@one%
+	\advance\igo@count by 1%
+	\edef\igo@option{\number\igo@count}%
+	\def\igo@end{}%
+	\def\igo@two{#2}%
+	\ifx\igo@two\igo@end{}\relax%
+		\let\igo@next\igo@eatbrackets%
+	\else%
+		\igo@whiten[\igo@one]{\igo@two}%
+		\ifnum \igo@one<1\relax%
+			\let\igo@option=\igo@one%
+			\let\igo@next\igo@recursivewhiten%
+		\else%
+			\let\igo@next\igo@recursiveblackn%
+		\fi%
+	\fi%
+	\igo@next[\igo@option]%
+}
+
+%%
+
+\def\black{\futurelet\igo@nextchar\igo@optionalblack}
+\def\igo@optionalblack{\ifx[\igo@nextchar\let\igo@newmacro\igo@manyblackn\else\let\igo@newmacro\igo@manyblack\fi\igo@newmacro}
+
+\def\igo@blackn[#1]#2{\igo@goban{#2}{\igo@bchar{#1}}}
+\def\igo@black#1{\igo@blackn[0]{#1}}
+
+\def\igo@manyblack#1{\igo@recursiveblack#1,,}
+\def\igo@recursiveblack#1,{\def\igo@end{}\def\igo@arg{#1}\ifx\igo@arg\igo@end\else\igo@black{#1}\expandafter\igo@recursiveblack\fi}
+
+\def\igo@manyblackn[#1]#2{\igo@recursiveblackn[#1]#2,,}
+\def\igo@recursiveblackn[#1]#2,{%
+	\edef\igo@one{#1}%
+	\igo@count=\igo@one%
+	\advance\igo@count by 1%
+	\edef\igo@option{\number\igo@count}%
+	\def\igo@end{}%
+	\def\igo@two{#2}%
+	\ifx\igo@two\igo@end{}\relax%
+		\let\igo@next\igo@eatbrackets%
+	\else%
+		\igo@blackn[\igo@one]{\igo@two}%
+		\ifnum \igo@one<1\relax%
+			\let\igo@option=\igo@one%
+			\let\igo@next\igo@recursiveblackn%
+		\else%
+			\let\igo@next\igo@recursivewhiten%
+		\fi%
+	\fi%
+	\igo@next[\igo@option]%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Removing stones from board
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igo@superclear#1#2{\global\expandafter\let\csname igo@stone;#1|\number#2\endcsname=\relax}
+\def\igo@clear#1{\igo@superclear{#1}{\igo@board}}
+
+\def\clear#1{\igo@recursiveclear#1,,}
+\def\igo@recursiveclear#1,{\def\igo@end{}\def\igo@arg{#1}\ifx\igo@arg\igo@end\else\igo@clear{#1}\expandafter\igo@recursiveclear\fi}
+
+\def\igo@cleargoban#1#2#3#4{%
+	\igo@endwhile=#2%
+	\advance\igo@endwhile by -1%
+	\repeat\for{row} \from{#4} \while{\ifnum \row>\igo@endwhile} \do{%
+		\repeat\for{col} \from{#1} \to{#3} \do{%
+			\igo@clear{\igo@intersectionlabel{\col}{\row}}%
+		}%
+		\advance\row by -2%
+	}%
+}
+
+\def\cleargoban{\futurelet\igo@nextchar\igo@optionalcleargoban}
+\def\igo@optionalcleargoban{\ifx[\igo@nextchar\let\igo@newmacro\igo@clearpartgoban\else\let\igo@newmacro\igo@clearallgoban\fi\igo@newmacro}
+
+\def\igo@clearallgoban{\igo@cleargoban{1}{1}{\igo@size}{\igo@size}}
+\def\igo@clearpartgoban[#1#2,#3#4]{%
+	\igo@minrow=#2%
+	\igo@maxrow=#4%
+	\igo@mincol=1%
+	\igo@maxcol=\igo@size%
+	\repeat\for{col} \to{\igo@size} \do {%
+		\if #1\igo@columnlabel{\col}\relax\igo@mincol=\col\fi%
+		\if #3\igo@columnlabel{\col}\relax\igo@maxcol=\col\fi%
+	}%
+	\igo@cleargoban{\igo@mincol}{\igo@minrow}{\igo@maxcol}{\igo@maxrow}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Symbols on the board
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\gobansymbol#1#2{%
+	\ifcat a#2\relax \else\ifcat 0#2\relax \else%
+		\errmessage{Invalid goban symbol.}%
+	\fi\fi%
+	\def\igo@symbol{\igo@font#2}\igo@recursivesymbol#1,,%
+}
+		
+\def\igo@recursivesymbol#1,{\def\igo@end{}\def\igo@arg{#1}\ifx\igo@arg\igo@end\else\igo@goban{#1}{\igo@symbol}\expandafter\igo@recursivesymbol\fi}
+
+\def\igo@boardlabel#1{\ifcase #1\or a\or b\or c\or d\or e\or f\or g\or h\or i\or j\or k\or l\or m\or n\or o\or p\or q\or r\or s\or t\or u\or v\or w\or x\or y\or z\or A\or B\or C\or D\or E\or F\or G\or H\or I\or J\or K\or L\or M\or N\or O\or P\or Q\or R\or S\or T\or U\or V\or W\or X\or Y\or Z\or 0\or 1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or 9\fi}
+\newcount\igo@boardlabelnum
+
+\def\gobansymbols#1#2{%
+	\ifcat a#2\relax \else\ifcat 0#2\relax \else%
+		\errmessage{Invalid goban symbol.}%
+	\fi\fi%
+	\igo@boardlabelnum=0%
+	\repeat \for{symbol} \from{1} \to{62} \do{%
+		\if #2\igo@boardlabel{\symbol} \expandafter\breakrepeat \fi%
+		\igo@boardlabelnum=\symbol%
+	}%
+	\igo@recursivesymbols#1,,%
+}
+
+\def\igo@recursivesymbols#1,{\advance\igo@boardlabelnum by 1\def\igo@end{}\def\igo@arg{#1}\ifx\igo@arg\igo@end\else \igo@goban{#1}{\igo@font\igo@boardlabel{\igo@boardlabelnum}}\expandafter\igo@recursivesymbols\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Characters needed to draw the board
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igo@ishoshi#1#2{\csname igo@hoshi;\igo@intersectionlabel{#1}{#2};\number\igo@size\endcsname}
+
+\def\igo@gobanchar#1#2{%
+	\ifnum 1=#1%
+		\ifnum 1=#2%
+			\igo@font\char8%                           % Bottom left corner
+		\else\ifnum \igo@size=#2%                 
+			\igo@font\char6%                           % Top left corner
+		\else%
+			\igo@font\char2%                           % Left border
+		\fi\fi%
+	\else\ifnum \igo@size=#1%
+		\ifnum 1=#2%
+			\igo@font\char9%                           % Bottom right corner
+		\else\ifnum \igo@size=#2%
+			\igo@font\char7%                           % Top right corner
+		\else%
+			\igo@font\char3%                           % Right border
+		\fi\fi%
+	\else\ifnum 1=#2%
+		\igo@font\char5%                             % Bottom border
+	\else\ifnum \igo@size=#2%
+		\igo@font\char4%                             % Top border
+	\else\if 1\igo@ishoshi{#1}{#2}\relax%
+		\igo@font\char0%                             % Hoshi point
+	\else%
+		\igo@font\char1%                             % Empty interior square
+	\fi\fi\fi\fi\fi%
+}
+
+\def\igo@gobanbgrdchar#1#2{%
+	\ifnum 1=#1%
+		\ifnum 1=#2%
+			\igo@font\char17%                          % Bottom left corner
+		\else\ifnum \igo@size=#2%                 
+			\igo@font\char15%                          % Top left corner
+		\else%
+			\igo@font\char11%                          % Left border
+		\fi\fi%
+	\else\ifnum \igo@size=#1%
+		\ifnum 1=#2%
+			\igo@font\char18%                          % Bottom right corner
+		\else\ifnum \igo@size=#2%
+			\igo@font\char16%                          % Top right corner
+		\else%
+			\igo@font\char12%                          % Right border
+		\fi\fi%
+	\else\ifnum 1=#2%
+		\igo@font\char14%                            % Bottom border
+	\else\ifnum \igo@size=#2%
+		\igo@font\char13%                            % Top border
+	\else%
+		\igo@font\char10%                            % Empty interior square
+	\fi\fi\fi\fi%
+}
+
+\def\igo@backspace{%
+	\hskip -\wd\igo@box%
+}
+
+\def\igo@getchar#1#2{%
+	\igo@ifundefined%
+		{igo@stone;\igo@intersectionlabel{#1}{#2}|\number\igo@board}%
+		{\rlap{\igo@gobanchar{#1}{#2}}\hskip\wd\igo@box}%
+		{\rlap{\igo@gobanbgrdchar{#1}{#2}\igo@backspace\igo@stone{#1}{#2}}\hskip\wd\igo@box}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Define size of stones in text (Nikolai Nemov, from size10.clo)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand\normalsize{%
+	\@setfontsize\normalsize\@xpt\@xiipt
+	\abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
+	\abovedisplayshortskip \z@ \@plus3\p@
+	\belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+	\belowdisplayskip \abovedisplayskip
+	\let\@listi\@listI
+	\def\stonesize{\igo@fonts{9}}%
+}
+
+\renewcommand\small{%
+	\@setfontsize\small\@ixpt{11}%
+	\abovedisplayskip 8.5\p@ \@plus3\p@ \@minus4\p@
+	\abovedisplayshortskip \z@ \@plus2\p@
+	\belowdisplayshortskip 4\p@ \@plus2\p@ \@minus2\p@
+	\def\@listi{\leftmargin\leftmargini
+		\topsep 4\p@ \@plus2\p@ \@minus2\p@
+		\parsep 2\p@ \@plus\p@ \@minus\p@
+		\itemsep \parsep}%
+	\belowdisplayskip \abovedisplayskip
+	\def\stonesize{\igo@fonts{8}}%
+}
+
+\renewcommand\footnotesize{%
+	\@setfontsize\footnotesize\@viiipt{9.5}%
+	\abovedisplayskip 6\p@ \@plus2\p@ \@minus4\p@
+	\abovedisplayshortskip \z@ \@plus\p@
+	\belowdisplayshortskip 3\p@ \@plus\p@ \@minus2\p@
+	\def\@listi{\leftmargin\leftmargini
+		\topsep 3\p@ \@plus\p@ \@minus\p@
+		\parsep 2\p@ \@plus\p@ \@minus\p@
+		\itemsep \parsep}%
+	\belowdisplayskip \abovedisplayskip
+	\def\stonesize{\igo@fonts{7}}%
+}
+
+\renewcommand\scriptsize{\@setfontsize\scriptsize\@viipt\@viiipt
+	\def\stonesize{\igo@fonts{6}}}%
+\renewcommand\tiny{\@setfontsize\tiny\@vpt\@vipt
+	\def\stonesize{\igo@fonts{5}}}%
+\renewcommand\large{\@setfontsize\large\@xiipt{14}
+	\def\stonesize{\igo@fonts{10}}}%
+\renewcommand\Large{\@setfontsize\Large\@xivpt{18}
+	\def\stonesize{\igo@fonts{11}}}%
+\renewcommand\LARGE{\@setfontsize\LARGE\@xviipt{22}
+	\def\stonesize{\igo@fonts{12}}}%
+\renewcommand\huge{\@setfontsize\huge\@xxpt{25}
+	\def\stonesize{\igo@fonts{15}}}%
+\renewcommand\Huge{\@setfontsize\Huge\@xxvpt{30}
+	\def\stonesize{\igo@fonts{20}}}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Displaying stones within normal text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\blackstone{\leavevmode\futurelet\igo@nextchar\igo@optionalblackstone}
+\def\igo@optionalblackstone{\ifx[\igo@nextchar\let\igo@newmacro\igo@blackstonen\else\let\igo@newmacro\igo@blackstone\fi\igo@newmacro}
+
+\def\igo@blackstone{\igo@blackstonen[0]}
+\def\igo@blackstonen[#1]{\stonesize\lower0.2\wd\igo@box\hbox{\igo@bchar{#1}}\igo@fonts{\number\igo@fontsize}}
+
+%%
+
+\def\whitestone{\leavevmode\futurelet\igo@nextchar\igo@optionalwhitestone}
+\def\igo@optionalwhitestone{\ifx[\igo@nextchar\let\igo@newmacro\igo@whitestonen\else\let\igo@newmacro\igo@whitestone\fi\igo@newmacro}
+
+\def\igo@whitestone{\igo@whitestonen[0]}
+\def\igo@whitestonen[#1]{\stonesize\lower0.2\ht\igo@box\hbox{\igo@wchar{#1}}\igo@fonts{\number\igo@fontsize}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Display a board
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\let\igobreakafterdiagram=\break
+\let\igobreakafterdiagram\empty
+
+\def\igo@showgoban#1#2#3#4{%
+	\igo@endwhile=#2%
+	\advance\igo@endwhile by -1%
+	\igo@count=1%
+	\advance\igo@count by #3%
+	\advance\igo@count by -#1%
+	\leavevmode\hbox{%
+		\vbox{\offinterlineskip\noindent%
+			\hsize=\igo@dimen%
+			\multiply\hsize\igo@count%
+			\break%    
+			\repeat\for{row} \from{#4} \while{\ifnum \row>\igo@endwhile} \do{%
+				\repeat\for{col} \from{#1} \to{#3} \do{%
+					\igo@getchar{\col}{\row}%
+				}%
+				\advance\row by -2%
+				\break%
+			}%
+			\break%
+		}%
+	}%
+	\igobreakafterdiagram%
+}
+
+\def\showgoban{\futurelet\igo@nextchar\igo@optionalshowgoban}
+\def\igo@optionalshowgoban{\ifx[\igo@nextchar\let\igo@newmacro\igo@showmygoban\else\let\igo@newmacro\igo@autoshowgoban\fi\igo@newmacro}
+
+\def\igo@autoshowgoban{%
+	\igo@mincol=\igo@size%
+	\igo@minrow=\igo@size%
+	\igo@maxcol=1%
+	\igo@maxrow=1%
+	\repeat\for{row} \from{1} \to{\igo@size} \do{%
+		\repeat\for{col} \from{1} \to{\igo@size} \do{%
+			\igo@ifundefined%
+				{igo@stone;\igo@intersectionlabel{\col}{\row}|\number\igo@board}%
+				{\relax}%
+				{%
+					\ifnum\col<\igo@mincol\relax\igo@mincol=\col\fi%
+					\ifnum\col>\igo@maxcol\relax\igo@maxcol=\col\fi%
+					\ifnum\row<\igo@minrow\relax\igo@minrow=\row\fi%
+					\ifnum\row>\igo@maxrow\relax\igo@maxrow=\row\fi%
+				}%
+		}%
+	}%
+	\ifnum\igo@mincol>1\relax\advance\igo@mincol by -1\fi%
+	\ifnum\igo@minrow>1\relax\advance\igo@minrow by -1\fi%
+	\ifnum\igo@maxcol<\igo@size\relax\advance\igo@maxcol by 1\fi%
+	\ifnum\igo@maxrow<\igo@size\relax\advance\igo@maxrow by 1\fi%
+	\ifnum\igo@mincol=2\relax\igo@mincol=1\fi%
+	\ifnum\igo@minrow=2\relax\igo@minrow=1\fi%
+	\advance\igo@maxcol by 1%
+	\advance\igo@maxrow by 1%
+	\ifnum\igo@maxcol=\igo@size\relax\else\advance\igo@maxcol by -1\fi%
+	\ifnum\igo@maxrow=\igo@size\relax\else\advance\igo@maxrow by -1\fi%
+	\ifnum\igo@minrow>\igo@maxrow\relax\igo@minrow=1\igo@maxrow=\igo@size\fi%
+	\ifnum\igo@mincol>\igo@maxcol\relax\igo@mincol=1\igo@maxcol=\igo@size\fi%
+	\igo@showgoban{\igo@mincol}{\igo@minrow}{\igo@maxcol}{\igo@maxrow}%
+}
+
+\def\igo@showmygoban[#1#2,#3#4]{%
+	\igo@minrow=#2%
+	\igo@maxrow=#4%
+	\igo@mincol=1%
+	\igo@maxcol=\igo@size%
+	\repeat\for{col} \to{\igo@size} \do{%
+		\if #1\igo@columnlabel{\col}\relax\igo@mincol=\col\fi%
+		\if #3\igo@columnlabel{\col}\relax\igo@maxcol=\col\fi%
+	}%
+	\igo@showgoban{\igo@mincol}{\igo@minrow}{\igo@maxcol}{\igo@maxrow}%
+}
+
+\def\showfullgoban{\igo@showgoban{1}{1}{\igo@size}{\igo@size}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Copying boards
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igo@copygoban#1#2{%
+	\repeat\for{row} \from{1} \to{\igo@size} \do {%
+		\repeat\for{col} \from{1} \to{\igo@size} \do {%
+			\igo@ifundefined%
+				{igo@stone;\igo@intersectionlabel{\col}{\row}|\number#1}%
+				{\igo@superclear{\igo@intersectionlabel{\col}{\row}}{#2}}%
+				{\igo@supergoban{\igo@intersectionlabel{\col}{\row}}{\igo@superstone{\col}{\row}{#1}}{#2}}%
+		}%
+	}%
+}
+
+\def\copyfromgoban#1{\igo@copygoban{#1}{\igo@board}}
+\def\copytogoban#1{\igo@copygoban{\igo@board}{#1}}
+
+\def\copygoban#1{\copyfromgoban{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Removing goban symbols (Frank Mittelbach)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\igo@getplainstone#1#2#3#4#5#6#7\igo@getplainstone#8{%
+	\xdef#8{%
+		\relax%
+		\if #6b%
+			\igo@blackfonti%
+		\else%
+			\igo@whitefonti%
+		\fi%
+		\char 0\relax%
+	}%
+}
+
+\def\igo@getplainstoneornothing#1#2#3\igo@getplainstoneornothing#4{%
+	\ifx#1\igo@font%
+		\global\let#4\relax%
+	\else%
+		\expandafter\igo@getplainstone\string#2\igo@getplainstone#4%
+	\fi%
+}
+
+\def\igo@clearsymbolx#1{%
+	\expandafter\igo@getplainstoneornothing #1\igo@getplainstoneornothing#1%
+}
+
+\def\igo@clearsymbol#1#2#3{%
+	\expandafter\igo@clearsymbolx%
+	\csname igo@stone;\igo@intersectionlabel{#1}{#2}|\number#3\endcsname%
+}
+
+\def\igo@cleargobansymbols#1{%
+	\repeat\for{row} \from{1} \to{\igo@size} \do {%
+		\repeat\for{col} \from{1} \to{\igo@size} \do {%
+			\igo@ifundefined%
+				{igo@stone;\igo@intersectionlabel{\col}{\row}|\number#1}%
+				{\igo@superclear{\igo@intersectionlabel{\col}{\row}}{#1}}%
+				{\igo@clearsymbol{\col}{\row}{#1}}%
+		}%
+	}%
+}
+			
+\def\cleargobansymbols{\igo@cleargobansymbols{\igo@board}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Geometric transformations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\mirrorgoban{%
+	\copytogoban{0}%
+	\repeat\for{row} \from{1} \to{\igo@size} \do{%
+		\repeat\for{col} \from{1} \to{\igo@size} \do{%
+			\igo@ifundefined%
+				{igo@stone;\igo@intersectionlabel{\row}{\col}|0}%
+				{\igo@clear{\igo@intersectionlabel{\col}{\row}}}%
+				{\igo@goban{\igo@intersectionlabel{\col}{\row}}{\igo@superstone{\row}{\col}{0}}}%
+		}%
+	}%
+}
+
+\def\vflipgoban{%
+	\copytogoban{0}%
+	\repeat\for{row} \from{1} \to{\igo@size} \do{%
+		\repeat\for{col} \from{1} \to{\igo@size} \do{%
+			\igo@count=1%
+			\advance\igo@count by \igo@size%
+			\advance\igo@count by -\row%
+			\igo@ifundefined%
+				{igo@stone;\igo@intersectionlabel{\col}{\igo@count}|0}%
+				{\igo@clear{\igo@intersectionlabel{\col}{\row}}}%
+				{\igo@goban{\igo@intersectionlabel{\col}{\row}}{\igo@superstone{\col}{\igo@count}{0}}}%
+		}%
+	}%
+}
+
+\def\hflipgoban{%
+	\copytogoban{0}%
+	\repeat\for{row} \from{1} \to{\igo@size} \do{%
+		\repeat\for{col} \from{1} \to{\igo@size} \do{%
+			\igo@count=1%
+			\advance\igo@count by \igo@size%
+			\advance\igo@count by -\col%
+			\igo@ifundefined%
+				{igo@stone;\igo@intersectionlabel{\igo@count}{\row}|0}%
+				{\igo@clear{\igo@intersectionlabel{\col}{\row}}}%
+				{\igo@goban{\igo@intersectionlabel{\col}{\row}}{\igo@superstone{\igo@count}{\row}{0}}}%
+		}%
+	}%
+}
+
+\def\rotategobanright{\mirrorgoban\vflipgoban}
+\def\rotategobanleft{\mirrorgoban\hflipgoban}
+\def\rotategoban{\hflipgoban\vflipgoban}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\catcode`;=12
+\catcode`|=12
+\catcode`@=12

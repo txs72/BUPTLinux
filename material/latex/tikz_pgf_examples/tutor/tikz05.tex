@@ -1,0 +1,10 @@
+\documentclass[tikz,convert=pdf2svg]{standalone}
+\usepackage{tikz}
+\begin{document}
+    \begin{tikzpicture}
+    [L1Node/.style={circle,   draw=blue!50, fill=blue!20, very thick, minimum size=10mm},
+    L2Node/.style={rectangle,draw=green!50,fill=green!20,very thick, minimum size=10mm}]
+       \foreach \x in {1,...,5}
+        \node[L1Node] (w1_\x) at (2*\x, 0){$\int_\Omega x_\x$};
+    \end{tikzpicture}
+\end{document}

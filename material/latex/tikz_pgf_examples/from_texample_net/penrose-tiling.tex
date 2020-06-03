@@ -1,0 +1,62 @@
+% Penrose tiling (P0=Robinson triangle decomposition)
+% Author: Paul Gaborit
+\documentclass{article}
+\usepackage{tikz}
+%%%<
+\usepackage{verbatim}
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\setlength{\PreviewBorder}{10pt}%
+%%%>
+\begin{comment}
+:Title: Penrose tiling
+:Tags: Recursion;Fractals;Decorative drawings
+:Author: Paul Gaborit
+:Slug: penrose-tiling
+
+An example of a Penrose tiling (P0=Robinson triangle decomposition)
+\end{comment}
+\usetikzlibrary{calc}
+\usepackage{ifthen}
+\pgfmathsetmacro{\invphi}{2/(1+sqrt(5))}
+\newcommand\penroseA[4]{% n, a, b, c
+  \ifthenelse{0<#1}{
+    {
+      \pgfmathtruncatemacro{\n}{#1-1}
+      \coordinate(#2#4) at ($(#2)!\invphi!(#4)$);
+      \coordinate(#2#3) at ($(#2)!\invphi!(#3)$);
+      \penroseA{\n}{#2}{#2#3}{#2#4}
+      \penroseA{\n}{#4}{#2#3}{#3}
+      \penroseB{\n}{#2#3}{#4}{#2#4}
+    }
+  }{
+    \fill[colA,draw=white] (#2) -- (#3) -- (#4) -- cycle;
+  }
+}
+\newcommand\penroseB[4]{% n, a, b, c
+  \ifthenelse{0<#1}{
+    {
+      \pgfmathtruncatemacro{\n}{#1-1}
+      \coordinate(#2#3) at ($(#2)!\invphi!(#3)$);
+      \penroseA{\n}{#2}{#2#3}{#4}
+      \penroseB{\n}{#3}{#4}{#2#3}
+    }
+  }{
+    \fill[colB,draw=white] (#2) -- (#3) -- (#4) -- cycle;
+  }
+}
+\begin{document}
+\begin{tikzpicture}[line width=.1pt]
+  \colorlet{cyan}[rgb]{cyan}
+  \colorlet{colB}{red}
+  \colorlet{colA}{blue}
+  \coordinate (a) at (0,0);
+  \path (a) ++(0:15) coordinate (b);
+  \path (a) ++(36:15) coordinate (c);
+  \path (a) ++(72:15*\invphi) coordinate (d);
+  \path (a) ++(-36:15*\invphi) coordinate (e);
+  \penroseA{8}{a}{b}{c}  
+  \penroseB{8}{c}{a}{d}
+  \penroseB{8}{b}{a}{e}
+\end{tikzpicture}
+\end{document}

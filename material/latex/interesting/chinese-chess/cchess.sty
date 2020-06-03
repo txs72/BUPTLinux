@@ -1,0 +1,163 @@
+%
+% Most of the code in this package was literally copied from the example
+% file cchessboard.tex provided with the cchess46.mf font designed by
+% Jacques Richer (see cchessboard.tex for details)
+%
+% i only added the following:
+%
+%  position environment 
+%
+%  \smallboard \normalboard \largeboard
+%
+%  \textpiece  (for setting a piece in running text)
+%
+%  in addition i changed the \piece command so that the first arg takes letters
+%  eg a position on the board is described by
+%
+%    \piece{a}{1}{r} rather than \piece{1}{1}{r}
+%
+%  (this is like the notation of chess and that's the way i know chinese chess
+%   notation)
+%
+% enjoy
+%
+%     Frank Mittelbach 96/12/28
+%
+% below is an example ...
+%
+% \smallboard
+% \begin{position}
+%   \piece{a}{1}{r}  \piece{i}{1}{r}
+%   \piece{b}{1}{n}  \piece{h}{1}{n}
+%   \piece{c}{1}{b}  \piece{g}{1}{b}
+%   \piece{d}{1}{g}  \piece{f}{1}{g}
+%   \piece{e}{5}{c}  \piece{e}{7}{c}
+%   \piece{a}{4}{p}  \piece{c}{4}{p}
+%   \piece{e}{4}{p}  \piece{g}{4}{p}
+%   \piece{i}{4}{p}  \piece{e}{1}{k}
+%   \piece{a}{9}{R}  \piece{i}{10}{R}
+%   \piece{a}{8}{N}  \piece{g}{8}{N}
+%   \piece{c}{10}{B} \piece{g}{10}{B}
+%   \piece{d}{10}{G} \piece{f}{10}{G}
+%   \piece{b}{8}{C}  \piece{h}{8}{C}
+%   \piece{a}{7}{P}  \piece{c}{7}{P}
+%   \piece{g}{7}{P}
+%   \piece{i}{7}{P}  \piece{e}{10}{K}
+% \end{position}
+%
+% ----------------------------------------------------------
+%
+\ProvidesPackage{cchess}
+   [1996/12/28 v1.0b chinese chess support (FMi/SPQR)]
+%
+%
+
+\newcounter{piecex}\newcounter{piecey}
+
+
+\newcommand\largeboard{%
+% The 3 dimensions in this command must be proportionnal to each other
+% \cchessunit is the edge size of individual squares on the board, 
+% in centimeters.
+   \def\cchessunit{2.2}%
+   \font\EchecsChinois cchess46\relax
+}
+\newcommand\normalboard{%
+% The 3 dimensions in this command must be proportionnal to each other
+   \def\cchessunit{1.1}%
+   \font\EchecsChinois cchess46 at 23pt\relax
+}
+\newcommand\smallboard{%
+% The 3 dimensions in this command must be proportionnal to each other
+   \def\cchessunit{0.55}%
+   \font\EchecsChinois cchess46 at 12pt\relax
+}
+% It would be preferable to replace the set \largeboard, \normalboard, \smallboard
+% by a single command with one argument, the edge size of the board, say.
+
+
+\normalboard
+
+\newcommand{\piece}[3]{%   macro pour afficher une piece
+%FMi dirty trick
+  \setcounter{piecex}{\expandafter`\csname#1\endcsname}%
+  \addtocounter{piecex}{-97}%   ascii value of `a'
+  \setcounter{piecey}{#2}\addtocounter{piecey}{-1}%
+  \setbox0=\hbox{\EchecsChinois #3}%
+% work out a masking circle by getting the width of the piece and
+% drawing a white circle of that diameter; the units here are
+% plain PS but if we convert to bp, we get the right result.
+  \@tempdima\wd0\@tempdimc1bp\divide\@tempdima\@tempdimc
+  \put(\value{piecex},\value{piecey}){\special{" 
+    [] 0 setdash 0 setlinejoin 0 setlinecap 
+    0.95 setgray 
+    newpath 0. 0. \number\@tempdima\space 2 div 0 360. arc closepath fill}}%
+  \put(\value{piecex},\value{piecey})%
+  {\kern-0.5\wd0\box0}%
+}
+
+% font for stones in text (this is rather experimental)
+
+\font\CCH=cchess46 scaled 300\relax
+\newcommand\textpiece[1]{\raisebox{3pt}[16pt]{\makebox[30pt][c]{\CCH #1}}}
+
+
+\newsavebox{\Something}%
+\newsavebox{\SW}\newsavebox{\SE}\newsavebox{\NE}\newsavebox{\NW}%
+
+\newenvironment{position}
+   {%
+  \setlength{\unitlength}{\cchessunit cm}%
+  \begin{picture}(9.1,10.1)(-0.6,-0.5)%
+  \put(0,0){\framebox(8,9){}}%
+  \put(-0.05,-0.05){\framebox(8.1,9.1){}}%
+  %
+  \savebox{\Something}(8,1)[bl]{%
+  \multiput(0,0)(1,0){8}{\framebox(1,1){}}}%
+  %
+  \multiput(0,0)(0,1){4}{\usebox{\Something}}%
+  \multiput(0,5)(0,1){4}{\usebox{\Something}}%
+  %
+  \savebox{\SW}(1,1)[bl]{%
+  \put(0.1,0.1){\line(1,0){0.2}}\put(0.1,0.1){\line(0,1){0.2}}}%
+  \savebox{\SE}(1,1)[bl]{%
+  \put(0.9,0.1){\line(-1,0){0.2}}\put(0.9,0.1){\line(0,1){0.2}}}%
+  \savebox{\NE}(1,1)[bl]{%
+  \put(0.9,0.9){\line(-1,0){0.2}}\put(0.9,0.9){\line(0,-1){0.2}}}%
+  \savebox{\NW}(1,1)[bl]{%
+  \put(0.1,0.9){\line(1,0){0.2}}\put(0.1,0.9){\line(0,-1){0.2}}}%
+  % On va commencer par faire les "croix" completes
+  \savebox{\Something}(2,2)[bl]{%
+  \put(0,0){\usebox{\NE}}\put(1,0){\usebox{\NW}}\put(1,1){\usebox{\SW}}\put(0,1){\usebox{\SE}}}%
+  %
+  \put(0,1){\usebox{\Something}}%
+  \put(6,1){\usebox{\Something}}%
+  \put(1,2){\usebox{\Something}}%
+  \put(3,2){\usebox{\Something}}%
+  \put(5,2){\usebox{\Something}}%
+  %
+  \put(0,6){\usebox{\Something}}%
+  \put(6,6){\usebox{\Something}}%
+  \put(1,5){\usebox{\Something}}%
+  \put(3,5){\usebox{\Something}}%
+  \put(5,5){\usebox{\Something}}%
+  % Maintenant les demi-croix gauches
+  \savebox{\Something}(1,2)[bl]{%
+  \put(0,0){\usebox{\NW}}\put(0,1){\usebox{\SW}}}%
+  \put(0,2){\usebox{\Something}}%
+  \put(0,5){\usebox{\Something}}%
+  % ...les demi-croix droites
+  \savebox{\Something}(1,2)[bl]{%
+  \put(0,0){\usebox{\NE}}\put(0,1){\usebox{\SE}}}%
+  \put(7,2){\usebox{\Something}}%
+  \put(7,5){\usebox{\Something}}%
+  %
+  % et pour finir, les camps des generaux:
+  \savebox{\Something}(2,2)[bl]{%
+  \put(0,0){\line(1,1){2}}% La "longueur" a fournir est celle de la projection horizontale
+  \put(2,0){\line(-1,1){2}}}%
+  \put(3,0){\usebox{\Something}}%
+  \put(3,7){\usebox{\Something}}%
+}{\end{picture}}
+
+\endinput

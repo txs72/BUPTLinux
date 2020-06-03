@@ -1,0 +1,93 @@
+% H-tree and B-tree
+% Author: Andrew Stacey
+\documentclass{article}
+\usepackage{tikz}
+%%%<
+\usepackage{verbatim}
+\usepackage[active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+\setlength{\PreviewBorder}{10pt}%
+%%%>
+\begin{comment}
+:Title: H-tree and b-tree
+:Tags: Loops;Trees;Graphs;Fractals
+:Author: Andrew Stacey
+:Slug: h-tree
+
+The H-tree got his name because of its repeating pattern which looks
+like the letter "H". It is also called H-fractal, it's a space-filling
+curve with a Hausdorff dimension of 2.
+
+A binary tree is a tree where each node has no more than two child nodes.
+
+The example shows how to build up a tree recursively using a \foreach loop.
+It uses the tree stuff already in TikZ. With a slight modification,
+the routine for drawing the H-tree can be adapted to a full binary tree.
+\end{comment}
+\tikzset{
+  htree leaves/.initial=2,
+  sibling angle/.initial=20,
+  htree level/.initial={}
+}
+
+\makeatletter
+
+\def\htree@growth{%
+  \pgftransformrotate{%
+    (\pgfkeysvalueof{/tikz/sibling angle})*(-.5-.5*\tikznumberofchildren
+      +\tikznumberofcurrentchild)}%
+  \pgftransformxshift{\the\tikzleveldistance}%
+  \pgfkeysvalueof{/tikz/htree level}%
+}
+\tikzstyle{htree}=[
+  growth function=\htree@growth,
+  sibling angle=180,
+  htree level={
+    \tikzleveldistance=.707\tikzleveldistance
+    \pgfsetlinewidth{.707*\the\pgflinewidth}
+  }
+]
+
+\tikzstyle{btree}=[
+  growth function=\htree@growth,
+  sibling angle=60,
+  htree level={
+    \tikzleveldistance=.55\tikzleveldistance
+    \pgfsetlinewidth{.707*\the\pgflinewidth}
+  }
+]
+
+\long\def\ge@addto@macro#1#2{%
+  \begingroup
+  \toks@\expandafter\expandafter\expandafter{\expandafter#1#2}%
+  \xdef#1{\the\toks@}%
+  \endgroup}
+
+\newcommand{\htree}[2][]{%
+  \def\htree@start{\noexpand\coordinate}
+  \def\htree@end{}
+  \foreach \l in {0,...,#2} {
+    \g@addto@macro\htree@start{child foreach \noexpand\x in {1,2} {\iffalse}\fi}
+    \g@addto@macro\htree@end{\iffalse{\fi}}
+    \global\let\htree@start\htree@start
+    \global\let\htree@end\htree@end
+  }
+  \edef\htree@cmd{\htree@start\htree@end;}
+  \begin{scope}[htree,#1]
+  \htree@cmd
+  \end{scope}
+}
+
+\makeatother
+
+\begin{document}
+\begin{tikzpicture}[
+  rotate=90,
+  yscale=.5,
+  level distance=3cm,
+  line width=8pt,
+]
+\htree{7}
+\htree[btree,yshift=-12cm,xshift=-3cm]{7}
+\end{tikzpicture}
+\end{document}

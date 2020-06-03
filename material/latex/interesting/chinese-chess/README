@@ -1,0 +1,32 @@
+將 cchess.sty copy 至
+
+$TEXMF/tex/latex/cchess
+
+cchess46.map copy 至
+
+$TEXMF/dvips/config
+
+cchess46.pfb copy 至
+
+$TEXMF/fonts/type1/cchess
+
+cchess46.tfm copy 至
+
+$TEXMF/fonts/tfm/public/cchess
+
+子目錄下。請依自己的系統自行修改目錄，無此目錄者，請自行建立。
+cchess46.map 可以在 config.ps 中加入一行
+
+p +cchess46.map
+
+否則執行 dvips 時要加 -u cchess46.map 參數。
+
+執行 texhash 後，就可以進行測試。
+
+由於原來的 cchess pcakage 並沒有標明版權資訊，因此這裡使用的
+license 同 cchess 原來的 license。
+
+
+Packer: Edward G.J. Lee <edt1023@speedymail.org> 2003.04.09
+
+

@@ -1,0 +1,21 @@
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{graphs}
+\begin{document}
+\centering
+\begin{tikzpicture}
+    \graph {
+        "$x_1$" -> "$x_2$"[red] -> "$x_3,x_4$";
+        "$x_1$" ->[bend left] "$x_3,x_4$";
+    };
+\end{tikzpicture} 
+
+\begin{tikzpicture}
+    \graph  {
+     a -> {
+        b -> c,
+        d -> e
+     } -> f
+    };
+\end{tikzpicture}
+\end{document}

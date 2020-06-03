@@ -1,0 +1,24 @@
+\documentclass[a4paper]{article}
+\usepackage{psgo}
+\usepackage[spanish,es-nolayout]{babel}
+\begin{document}
+\begin{psgoboard*}
+\stone{black}{q}{16}
+\stone{white}{c}{3} \stone{white}{e}{3} \stone{white}{d}{2} \stone{white}{d}{4} \stone{black}{f}{3} \stone{black}{e}{2} \stone{black}{e}{4}
+\end{psgoboard*}
+
+\begin{psgoboard}[9] \move{c}{3} \move{g}{7}
+\pass
+\move{f}{1} \move{a}{9} \end{psgoboard}
+
+\begin{psgoboard}[9] \move*{c}{3} \move*{g}{7}
+\pass*
+\move*{f}{1}
+\move*{a}{9}
+\move{f}{6} % new \move commands \move{e}{6}
+\pass
+\move{c}{5}
+\end{psgoboard}
+
+\end{document}
+
