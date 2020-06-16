@@ -1,0 +1,129 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+\ctexset{
+	section/format += \raggedright
+}
+%\usepackage[UTF8, heading = true]{ctex}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath, amssymb}
+\usepackage[hidelinks]{hyperref}
+
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage[font=small]{caption}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{
+	\includegraphics[width=0.05\textwidth]{./BUPT_LOGO.png}
+}
+\chead{北京邮电大学}
+\rhead{captain@bupt.edu.cn}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headwidth}{\textwidth}
+\renewcommand{\footrulewidth}{0pt}
+
+\usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}
+\setlength{\headheight}{26pt} 
+\usepackage{setspace}
+\setstretch{1}%单倍行距
+
+\usepackage{fontspec}
+% 衬线字体：Linux Libertine
+\setmainfont{Linux Libertine O}
+% 无衬线字体：Linux Biolinum
+\setsansfont{Linux Biolinum O}
+% 等宽/打印机字体：Linux Libertine Mono
+\setmonofont{Linux Libertine Mono O}
+
+% 衬线字体：Noto Serif CJK SC
+\setCJKmainfont{Noto Serif CJK SC}
+% 无衬线字体：Noto Sans CJK SC
+\setCJKsansfont{Noto Sans CJK SC}
+% 等宽字体/打印机字体：Noto Sans Mono CJK SC
+\setCJKmonofont{Noto Sans Mono CJK SC}
+
+\usepackage{chemfig}
+\usepackage{skak}
+
+\begin{document}
+	\begin{center}
+		\large
+		\textbf{Linux操作系统第五次作业}
+		
+		臧志强 2014210358
+		
+		\today
+	\end{center}	
+	
+	\section{有趣的示例}
+	\begin{figure}[htbp]
+		\centering
+		\begin{subfigure}[b]{0.45\textwidth}
+			\centering
+			\newgame
+			
+			\showboard
+			\caption{国际象棋}
+			\label{fig:chess}
+		\end{subfigure}
+		~
+		\begin{subfigure}[b]{0.45\textwidth}
+			\centering
+			\chemfig{
+				NO_2-[:90]*6(=-(-NO_2)=(-CH_3)-(-O_2N)=-)}
+			\caption{2，4，6 -- 三硝基甲苯（TNT）}
+			\label{fig:TNT}
+		\end{subfigure}
+		\caption{有趣的示例}
+		\label{fig:demoes}
+	\end{figure}
+
+	\section{Apocalypse Tank（天启坦克）}
+	
+	\begin{quote}
+		The apocalypse has begun!
+	\end{quote}
+	The successor to the old Soviet Mammoth tank, the \textit{Apocalypse Assault Tank} (seen in figure \ref{fig:icon}) was a powerful heavy tank used by the USSR during the first and second iterations of the Third World War. It featured twin 120mm cannons, anti-air missiles, very heavy armour, and self-repair abilities, making it a force to be reckoned with on the battlefield.
+	\begin{figure}[h]
+		\centering
+			\begin{subfigure}[c]{0.1\textwidth}
+				\includegraphics[width=\textwidth]{RA2_Apocalypse_Tank_Icons.png}
+				\newline
+				\newline
+				\includegraphics[width=\textwidth]{RA2_Apocalypse_Tank_Veteran_Icons.png}
+			\end{subfigure}
+		~~
+			\begin{subfigure}[c]{0.5\textwidth}
+				\includegraphics[width=\textwidth]{RA2_Black_Guard_with_anti-aliasing.jpg}
+			\end{subfigure}
+		\caption{Apocalypse tank}			
+		\label{fig:icon}
+	\end{figure}	
+%	作为老式苏维埃猛犸坦克的继承者，\textbf{天启突击坦克}是苏联在第三次世界大战的两次重演中使用的一种强大的重型坦克。 它装备有一对120mm火炮、对空导弹，同时拥有重装甲和自我修复能力，无疑是战场上的中坚力量。
+	
+	
+%	\begin{figure}
+%		\begin{center}
+%			\includegraphics[width=0.38\textwidth]{RA2_Apocalypse_Tank.png}\\
+%		\end{center}
+%		\label{fig:RA2_APOC}
+%	\end{figure}
+
+	
+%	\chemfig{
+%		H_3C-[:72]{\color{blue}N}*5(- 
+%		*6(-(={\color{red}O})-
+%		{\color{blue}N}(-CH_3)-
+%		(={\color{red}O})-
+%		{\color{blue}N}(-CH_3)-=)--
+%		{\color{blue}N}=-)}
+	
+
+\end{document}
